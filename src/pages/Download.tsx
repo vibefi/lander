@@ -1,0 +1,348 @@
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Apple,
+  Monitor,
+  Terminal,
+  Copy,
+  Check,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { Nav } from "../components/Nav";
+import { Footer } from "../components/Footer";
+
+/* ------------------------------------------------------------------ */
+/*  OS detection                                                       */
+/* ------------------------------------------------------------------ */
+
+type OS = "macos" | "windows" | "linux";
+
+function detectOS(): OS {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes("win")) return "windows";
+  if (ua.includes("linux")) return "linux";
+  return "macos";
+}
+
+/* ------------------------------------------------------------------ */
+/*  Constants                                                          */
+/* ------------------------------------------------------------------ */
+
+const CURL_CMD = `curl -fsSL https://install.vibefi.dev | sh`;
+
+const OS_META: Record<
+  OS,
+  { label: string; icon: typeof Apple; fileName?: string }
+> = {
+  macos: { label: "macOS", icon: Apple },
+  windows: { label: "Windows", icon: Monitor, fileName: "VibeFi-latest.msi" },
+  linux: { label: "Linux", icon: Monitor, fileName: "VibeFi-latest.AppImage" },
+};
+
+/* ------------------------------------------------------------------ */
+/*  Copy button                                                        */
+/* ------------------------------------------------------------------ */
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#a8a29e] transition-colors duration-150 hover:bg-[#2e2a27] hover:text-[#d6d3d1]"
+      aria-label="Copy to clipboard"
+    >
+      {copied ? <Check size={15} /> : <Copy size={15} />}
+    </button>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  macOS install guide                                                */
+/* ------------------------------------------------------------------ */
+
+function MacGuide() {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="mt-8">
+      {/* Command block */}
+      <div className="overflow-hidden rounded-lg border border-border bg-[#1c1917]">
+        <div className="flex items-center justify-between border-b border-[#2e2a27] px-4 py-2.5">
+          <div className="flex items-center gap-2">
+            <Terminal size={14} className="text-[#a8a29e]" />
+            <span className="text-[12px] font-medium text-[#a8a29e]">
+              Terminal
+            </span>
+          </div>
+          <CopyButton text={CURL_CMD} />
+        </div>
+        <div className="px-4 py-4">
+          <code className="text-[14px] leading-relaxed text-[#d6d3d1]">
+            {CURL_CMD}
+          </code>
+        </div>
+      </div>
+
+      {/* Expandable step-by-step for non-technical users */}
+      <div className="mt-5">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-2 text-[14px] font-medium text-teal-accent transition-colors duration-150 hover:text-teal-accent-hover"
+          aria-expanded={expanded}
+        >
+          {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          New to the terminal? Step-by-step guide
+        </button>
+
+        {expanded && (
+          <ol className="mt-5 flex flex-col gap-5 border-l-2 border-border pl-6">
+            <li>
+              <StepNumber n={1} />
+              <p className="mt-1 text-[15px] font-medium text-ink">
+                Open Terminal
+              </p>
+              <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
+                Press{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  ⌘ Cmd
+                </kbd>{" "}
+                +{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  Space
+                </kbd>{" "}
+                to open Spotlight, type{" "}
+                <strong className="text-ink">Terminal</strong>, and press Enter.
+              </p>
+            </li>
+            <li>
+              <StepNumber n={2} />
+              <p className="mt-1 text-[15px] font-medium text-ink">
+                Paste the install command
+              </p>
+              <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
+                Click the copy button above, then in Terminal press{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  ⌘ Cmd
+                </kbd>{" "}
+                +{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  V
+                </kbd>{" "}
+                to paste.
+              </p>
+            </li>
+            <li>
+              <StepNumber n={3} />
+              <p className="mt-1 text-[15px] font-medium text-ink">
+                Press Enter and wait
+              </p>
+              <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
+                The installer downloads and sets up VibeFi. You may be prompted
+                for your password — this is normal. When it finishes, you can
+                launch VibeFi from your Applications folder or by typing{" "}
+                <code className="rounded bg-surface-alt px-1.5 py-0.5 font-mono text-[12px]">
+                  vibefi
+                </code>{" "}
+                in Terminal.
+              </p>
+            </li>
+          </ol>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StepNumber({ n }: { n: number }) {
+  return (
+    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-accent text-[12px] font-semibold text-white">
+      {n}
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Windows / Linux download card                                      */
+/* ------------------------------------------------------------------ */
+
+function BinaryDownload({ os }: { os: "windows" | "linux" }) {
+  const meta = OS_META[os];
+  const ext = os === "windows" ? ".msi" : ".AppImage";
+
+  return (
+    <div className="mt-8">
+      <a
+        href={`https://releases.vibefi.dev/latest/${meta.fileName}`}
+        className="inline-flex h-12 items-center gap-3 rounded-lg bg-teal-accent px-7 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
+      >
+        <Monitor size={18} />
+        Download {meta.fileName}
+      </a>
+      <p className="mt-4 text-[13px] leading-relaxed text-ink-muted">
+        {os === "windows" ? (
+          <>
+            Run the <code className="rounded bg-surface-alt px-1 py-0.5 font-mono text-[12px]">{ext}</code> installer.
+            Windows may show a SmartScreen warning — click{" "}
+            <strong className="text-ink">More info</strong> →{" "}
+            <strong className="text-ink">Run anyway</strong>.
+          </>
+        ) : (
+          <>
+            Make the file executable:{" "}
+            <code className="rounded bg-surface-alt px-1 py-0.5 font-mono text-[12px]">
+              chmod +x {meta.fileName}
+            </code>{" "}
+            then run it. On some distros you may need to install FUSE:{" "}
+            <code className="rounded bg-surface-alt px-1 py-0.5 font-mono text-[12px]">
+              sudo apt install libfuse2
+            </code>
+          </>
+        )}
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  OS tab selector                                                    */
+/* ------------------------------------------------------------------ */
+
+function OsTabs({
+  current,
+  onChange,
+}: {
+  current: OS;
+  onChange: (os: OS) => void;
+}) {
+  const tabs: OS[] = ["macos", "windows", "linux"];
+  return (
+    <div className="mt-10 inline-flex rounded-lg border border-border bg-surface-alt p-1">
+      {tabs.map((os) => {
+        const meta = OS_META[os];
+        const Icon = meta.icon;
+        const active = os === current;
+        return (
+          <button
+            key={os}
+            onClick={() => onChange(os)}
+            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium transition-colors duration-150 ${
+              active
+                ? "bg-surface text-ink shadow-sm"
+                : "text-ink-muted hover:text-ink"
+            }`}
+            aria-pressed={active}
+          >
+            <Icon size={15} />
+            {meta.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
+
+export function Download() {
+  const detected = useMemo(detectOS, []);
+  const [os, setOs] = useState<OS>(detected);
+
+  return (
+    <>
+      <Nav />
+      <main className="px-6 pb-24 pt-20 sm:pb-32 sm:pt-28">
+        <div className="mx-auto max-w-[700px]">
+          <Link
+            to="/"
+            className="text-[13px] text-ink-muted transition-colors duration-150 hover:text-ink"
+          >
+            ← Back to home
+          </Link>
+
+          <h1 className="mt-6 text-[clamp(1.75rem,4vw,2.5rem)] font-bold leading-[1.15] tracking-tight text-ink">
+            Download VibeFi
+          </h1>
+          <p className="mt-4 max-w-[520px] text-[16px] leading-[1.7] text-ink-muted">
+            The desktop client fetches governance-approved frontends from IPFS,
+            verifies every file, builds locally, and runs them in a sandboxed
+            runtime.
+          </p>
+
+          <OsTabs current={os} onChange={setOs} />
+
+          {os === "macos" && <MacGuide />}
+          {os === "windows" && <BinaryDownload os="windows" />}
+          {os === "linux" && <BinaryDownload os="linux" />}
+
+          {/* System requirements */}
+          <div className="mt-14 border-t border-border pt-8">
+            <h2 className="text-[15px] font-semibold text-ink">
+              System requirements
+            </h2>
+            <ul className="mt-4 flex flex-col gap-2.5 text-[14px] leading-relaxed text-ink-muted">
+              {os === "macos" && (
+                <>
+                  <li>macOS 12 (Monterey) or later</li>
+                  <li>Apple Silicon or Intel</li>
+                  <li>
+                    Bun runtime (installed automatically by the install script)
+                  </li>
+                </>
+              )}
+              {os === "windows" && (
+                <>
+                  <li>Windows 10 (1809) or later</li>
+                  <li>WebView2 runtime (included in Windows 11, auto-installed on 10)</li>
+                  <li>Bun runtime (bundled in the installer)</li>
+                </>
+              )}
+              {os === "linux" && (
+                <>
+                  <li>
+                    GTK 3 + WebKitGTK (e.g.{" "}
+                    <code className="rounded bg-surface-alt px-1 py-0.5 font-mono text-[12px]">
+                      libwebkit2gtk-4.1
+                    </code>
+                    )
+                  </li>
+                  <li>FUSE for AppImage support</li>
+                  <li>Bun runtime (bundled in the AppImage)</li>
+                </>
+              )}
+            </ul>
+          </div>
+
+          {/* Verify */}
+          <div className="mt-10 border-t border-border pt-8">
+            <h2 className="text-[15px] font-semibold text-ink">
+              Verify your install
+            </h2>
+            <p className="mt-3 text-[14px] leading-relaxed text-ink-muted">
+              After installation, open a terminal and run:
+            </p>
+            <div className="mt-3 overflow-hidden rounded-lg border border-border bg-[#1c1917]">
+              <div className="flex items-center justify-between px-4 py-3">
+                <code className="text-[14px] text-[#d6d3d1]">
+                  vibefi --version
+                </code>
+                <CopyButton text="vibefi --version" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
