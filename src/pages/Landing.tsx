@@ -227,7 +227,9 @@ function Hero() {
           On-chain governance decides which frontend versions are approved.
           Content-addressed bundles are fetched from IPFS, verified against a
           manifest, built locally, and served in a sandboxed runtime with zero
-          outbound network access.
+          outbound network access. LLMs now accelerate both frontend code
+          generation and review, so verifiable distribution is no longer
+          optional.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
@@ -294,6 +296,68 @@ function Problem() {
             </code>
             . No outbound HTTP, ever.
           </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Why Now                                                            */
+/* ------------------------------------------------------------------ */
+
+const WHY_NOW_ITEMS = [
+  {
+    icon: Package,
+    title: "Code ships faster",
+    desc: "LLMs let teams draft DeFi UI, wallet flows, and integration glue at unprecedented speed.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Review ships faster",
+    desc: "The same models accelerate review by checking PRs, tracing contract calls, and flagging risky diffs earlier.",
+  },
+  {
+    icon: ShieldAlert,
+    title: "Distribution risk grows",
+    desc: "When changes move this quickly, centralized deploy pipelines become the weakest link. VibeFi adds governance and verification before users run new code.",
+  },
+] as const;
+
+function WhyNow() {
+  return (
+    <section
+      id="why-now"
+      className="scroll-mt-16 px-6 py-20 sm:py-24"
+    >
+      <div className="mx-auto max-w-[1152px]">
+        <p className="text-[12px] font-medium uppercase tracking-wider text-ink-faint">
+          Why now
+        </p>
+        <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
+          LLMs changed the release cadence for DeFi frontends.
+        </h2>
+        <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
+          LLMs compress both stages that used to be slow: writing frontend code
+          and reviewing it. More releases can ship, more often. VibeFi exists to
+          make that new speed governable and verifiable.
+        </p>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-3">
+          {WHY_NOW_ITEMS.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-lg border border-border bg-surface p-6"
+            >
+              <item.icon size={20} className="text-teal-accent" />
+              <h3 className="mt-4 text-[15px] font-semibold text-ink">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
+                {item.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -558,6 +622,7 @@ export function Landing() {
       <main id="main">
         <Hero />
         <Problem />
+        <WhyNow />
         <HowItWorks />
         <Features />
         <TechnicalSnippet />
