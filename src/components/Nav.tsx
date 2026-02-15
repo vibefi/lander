@@ -7,6 +7,7 @@ type NavLink =
   | { label: string; to: string };
 
 const NAV_LINKS: NavLink[] = [
+  { label: "Why Now", href: "#why-now" },
   { label: "Features", href: "#features" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "Download", to: "/download" },
