@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Apple,
   Monitor,
+  Package,
   Terminal,
   Wrench,
   Copy,
@@ -30,15 +31,15 @@ function detectOS(): OS {
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const CURL_CMD = `curl -fsSL https://install.vibefi.dev | sh`;
+const CURL_CMD = `curl -fsSL https://github.com/vibefi/client-staging-public/releases/latest/download/install-vibefi-macos.sh | sh`;
 
 const OS_META: Record<
   OS,
-  { label: string; icon: typeof Apple; fileName?: string }
+  { label: string; icon: typeof Apple }
 > = {
   macos: { label: "macOS", icon: Apple },
-  windows: { label: "Windows", icon: Monitor, fileName: "VibeFi-latest.msi" },
-  linux: { label: "Linux", icon: Terminal, fileName: "VibeFi-latest.AppImage" },
+  windows: { label: "Windows", icon: Monitor },
+  linux: { label: "Linux", icon: Terminal },
 };
 
 const GITHUB_RELEASE_REPO = "vibefi/client-staging-public";
@@ -69,7 +70,8 @@ type ReleaseAssets = {
   tag: string | null;
   releaseUrl: string;
   windows: BinaryReleaseAsset | null;
-  linux: BinaryReleaseAsset | null;
+  linuxAppImage: BinaryReleaseAsset | null;
+  linuxDeb: BinaryReleaseAsset | null;
 };
 
 type ChecksumEntry = {
@@ -110,7 +112,7 @@ function scoreAssetName(name: string): number {
 
 function findReleaseAsset(
   assets: GithubReleaseAsset[],
-  extension: ".msi" | ".appimage",
+  extension: ".msi" | ".appimage" | ".deb",
 ): GithubReleaseAsset | null {
   const matches = assets.filter((asset) =>
     asset.name.toLowerCase().endsWith(extension),
@@ -278,26 +280,79 @@ function BinaryDownload({
   os: "windows" | "linux";
   releaseAssets: ReleaseAssets;
 }) {
-  const meta = OS_META[os];
-  const ext = os === "windows" ? ".msi" : ".AppImage";
-  const Icon = meta.icon;
-  const binaryAsset = os === "windows" ? releaseAssets.windows : releaseAssets.linux;
-  const fileName =
-    binaryAsset?.fileName ??
-    meta.fileName ??
-    (os === "windows" ? "VibeFi.msi" : "VibeFi.AppImage");
-  const downloadUrl = binaryAsset?.downloadUrl ?? releaseAssets.releaseUrl;
-  const missingDirectAsset = !binaryAsset && !releaseAssets.loading;
+  if (os === "windows") {
+    const windowsAsset = releaseAssets.windows;
+    const fileName = windowsAsset?.fileName ?? "VibeFi.msi";
+    const missingDirectAsset = !windowsAsset && !releaseAssets.loading;
+
+    return (
+      <div>
+        <a
+          href={windowsAsset?.downloadUrl ?? releaseAssets.releaseUrl}
+          className="inline-flex h-12 items-center gap-3 rounded-lg bg-teal-accent px-7 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
+        >
+          <Monitor size={18} />
+          Download {fileName}
+        </a>
+        {releaseAssets.tag && (
+          <p className="mt-3 text-[12px] text-ink-muted">
+            Latest GitHub release:{" "}
+            <a
+              href={releaseAssets.releaseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal-accent underline-offset-2 hover:underline"
+            >
+              {releaseAssets.tag}
+            </a>
+          </p>
+        )}
+        {missingDirectAsset && (
+          <p className="mt-2 text-[12px] text-ink-muted">
+            Direct .msi asset was not found in the latest release. The link
+            above opens the release page.
+          </p>
+        )}
+        <div className="mt-4 rounded-lg border border-border bg-surface-alt p-4">
+          <p className="text-[13px] leading-relaxed text-ink-muted">
+            Run the{" "}
+            <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
+              .msi
+            </code>{" "}
+            installer. Windows may show a SmartScreen warning, click{" "}
+            <strong className="text-ink">More info</strong> then{" "}
+            <strong className="text-ink">Run anyway</strong>.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const linuxDebAsset = releaseAssets.linuxDeb;
+  const linuxAppImageAsset = releaseAssets.linuxAppImage;
+  const debFileName = linuxDebAsset?.fileName ?? "vibefi.deb";
+  const appImageFileName = linuxAppImageAsset?.fileName ?? "VibeFi.AppImage";
+  const missingDebAsset = !linuxDebAsset && !releaseAssets.loading;
+  const missingAppImageAsset = !linuxAppImageAsset && !releaseAssets.loading;
 
   return (
     <div>
-      <a
-        href={downloadUrl}
-        className="inline-flex h-12 items-center gap-3 rounded-lg bg-teal-accent px-7 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
-      >
-        <Icon size={18} />
-        Download {fileName}
-      </a>
+      <div className="flex flex-wrap gap-3">
+        <a
+          href={linuxDebAsset?.downloadUrl ?? releaseAssets.releaseUrl}
+          className="inline-flex h-12 items-center gap-3 rounded-lg bg-teal-accent px-7 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
+        >
+          <Package size={18} />
+          Download {debFileName}
+        </a>
+        <a
+          href={linuxAppImageAsset?.downloadUrl ?? releaseAssets.releaseUrl}
+          className="inline-flex h-12 items-center gap-3 rounded-lg border border-border bg-surface px-7 text-[15px] font-medium text-ink transition-colors duration-150 hover:bg-white"
+        >
+          <Terminal size={18} />
+          Download {appImageFileName}
+        </a>
+      </div>
       {releaseAssets.tag && (
         <p className="mt-3 text-[12px] text-ink-muted">
           Latest GitHub release:{" "}
@@ -311,36 +366,34 @@ function BinaryDownload({
           </a>
         </p>
       )}
-      {missingDirectAsset && (
+      {missingDebAsset && (
         <p className="mt-2 text-[12px] text-ink-muted">
-          Direct {ext} asset was not found in the latest release. The link
+          Direct .deb asset was not found in the latest release. The link above
+          opens the release page.
+        </p>
+      )}
+      {missingAppImageAsset && (
+        <p className="mt-2 text-[12px] text-ink-muted">
+          Direct .AppImage asset was not found in the latest release. The link
           above opens the release page.
         </p>
       )}
-      <div className="mt-4 rounded-lg border border-border bg-surface-alt p-4">
+      <div className="mt-4 space-y-3 rounded-lg border border-border bg-surface-alt p-4">
         <p className="text-[13px] leading-relaxed text-ink-muted">
-          {os === "windows" ? (
-            <>
-              Run the{" "}
-              <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
-                {ext}
-              </code>{" "}
-              installer. Windows may show a SmartScreen warning, click{" "}
-              <strong className="text-ink">More info</strong> then{" "}
-              <strong className="text-ink">Run anyway</strong>.
-            </>
-          ) : (
-            <>
-              Make the file executable:{" "}
-              <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
-                chmod +x {fileName}
-              </code>{" "}
-              then run it. On some distros you may need to install FUSE:{" "}
-              <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
-                sudo apt install libfuse2
-              </code>
-            </>
-          )}
+          Debian/Ubuntu install:{" "}
+          <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
+            sudo apt install ./{debFileName}
+          </code>
+        </p>
+        <p className="text-[13px] leading-relaxed text-ink-muted">
+          AppImage install:{" "}
+          <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
+            chmod +x {appImageFileName}
+          </code>{" "}
+          then run it. On some distros you may need:{" "}
+          <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
+            sudo apt install libfuse2
+          </code>
         </p>
       </div>
     </div>
@@ -577,7 +630,8 @@ export function Download() {
     tag: null,
     releaseUrl: GITHUB_RELEASES_PAGE,
     windows: null,
-    linux: null,
+    linuxAppImage: null,
+    linuxDeb: null,
   });
 
   useEffect(() => {
@@ -596,7 +650,8 @@ export function Download() {
 
         const release = (await response.json()) as GithubLatestRelease;
         const windowsAsset = findReleaseAsset(release.assets, ".msi");
-        const linuxAsset = findReleaseAsset(release.assets, ".appimage");
+        const linuxAppImageAsset = findReleaseAsset(release.assets, ".appimage");
+        const linuxDebAsset = findReleaseAsset(release.assets, ".deb");
 
         setReleaseAssets({
           loading: false,
@@ -604,7 +659,8 @@ export function Download() {
           tag: release.tag_name,
           releaseUrl: release.html_url || GITHUB_RELEASES_PAGE,
           windows: toBinaryReleaseAsset(windowsAsset),
-          linux: toBinaryReleaseAsset(linuxAsset),
+          linuxAppImage: toBinaryReleaseAsset(linuxAppImageAsset),
+          linuxDeb: toBinaryReleaseAsset(linuxDebAsset),
         });
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
@@ -618,7 +674,8 @@ export function Download() {
           tag: null,
           releaseUrl: GITHUB_RELEASES_PAGE,
           windows: null,
-          linux: null,
+          linuxAppImage: null,
+          linuxDeb: null,
         });
       }
     }
@@ -630,7 +687,8 @@ export function Download() {
   const checksumEntries = useMemo<ChecksumEntry[]>(() => {
     return [
       {
-        label: "macOS installer script (install.vibefi.dev)",
+        label:
+          "macOS installer script (GitHub releases/latest/download/install-vibefi-macos.sh)",
         sum: "Verified by installer script during download",
         copyable: false,
       },
@@ -646,15 +704,26 @@ export function Download() {
         copyable: Boolean(releaseAssets.windows?.sha256),
       },
       {
-        label: releaseAssets.linux
-          ? `Linux AppImage (${releaseAssets.linux.fileName})`
-          : "Linux AppImage (.AppImage)",
+        label: releaseAssets.linuxDeb
+          ? `Linux Debian package (${releaseAssets.linuxDeb.fileName})`
+          : "Linux Debian package (.deb)",
         sum:
-          releaseAssets.linux?.sha256 ??
+          releaseAssets.linuxDeb?.sha256 ??
           (releaseAssets.loading
             ? "Loading from GitHub..."
             : "SHA256 unavailable"),
-        copyable: Boolean(releaseAssets.linux?.sha256),
+        copyable: Boolean(releaseAssets.linuxDeb?.sha256),
+      },
+      {
+        label: releaseAssets.linuxAppImage
+          ? `Linux AppImage (${releaseAssets.linuxAppImage.fileName})`
+          : "Linux AppImage (.AppImage)",
+        sum:
+          releaseAssets.linuxAppImage?.sha256 ??
+          (releaseAssets.loading
+            ? "Loading from GitHub..."
+            : "SHA256 unavailable"),
+        copyable: Boolean(releaseAssets.linuxAppImage?.sha256),
       },
     ];
   }, [releaseAssets]);
