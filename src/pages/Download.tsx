@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Apple,
@@ -41,20 +41,92 @@ const OS_META: Record<
   linux: { label: "Linux", icon: Terminal, fileName: "VibeFi-latest.AppImage" },
 };
 
-const DOWNLOAD_SHA256_PLACEHOLDERS = [
-  {
-    label: "macOS installer script (install.vibefi.dev)",
-    sum: "SHA256_PLACEHOLDER_MACOS_INSTALL_SCRIPT",
-  },
-  {
-    label: "Windows installer (VibeFi-latest.msi)",
-    sum: "SHA256_PLACEHOLDER_WINDOWS_MSI",
-  },
-  {
-    label: "Linux AppImage (VibeFi-latest.AppImage)",
-    sum: "SHA256_PLACEHOLDER_LINUX_APPIMAGE",
-  },
-] as const;
+const GITHUB_RELEASES_API =
+  "https://api.github.com/repos/vibefi/client/releases/latest";
+const GITHUB_RELEASES_PAGE = "https://github.com/vibefi/client/releases/latest";
+
+type GithubReleaseAsset = {
+  name: string;
+  browser_download_url: string;
+  digest?: string | null;
+};
+
+type GithubLatestRelease = {
+  tag_name: string;
+  html_url: string;
+  assets: GithubReleaseAsset[];
+};
+
+type BinaryReleaseAsset = {
+  fileName: string;
+  downloadUrl: string;
+  sha256: string | null;
+};
+
+type ReleaseAssets = {
+  loading: boolean;
+  error: string | null;
+  tag: string | null;
+  releaseUrl: string;
+  windows: BinaryReleaseAsset | null;
+  linux: BinaryReleaseAsset | null;
+};
+
+type ChecksumEntry = {
+  label: string;
+  sum: string;
+  copyable: boolean;
+};
+
+function parseSha256Digest(digest?: string | null): string | null {
+  if (!digest) return null;
+  const [algorithm, hash] = digest.split(":", 2);
+  if (!algorithm || !hash) return null;
+  return algorithm.toLowerCase() === "sha256" ? hash : null;
+}
+
+function scoreAssetName(name: string): number {
+  const lower = name.toLowerCase();
+  let score = 0;
+
+  if (
+    lower.includes("x86_64") ||
+    lower.includes("x64") ||
+    lower.includes("amd64")
+  ) {
+    score += 3;
+  }
+
+  if (lower.includes("arm64") || lower.includes("aarch64")) {
+    score -= 3;
+  }
+
+  return score;
+}
+
+function findReleaseAsset(
+  assets: GithubReleaseAsset[],
+  extension: ".msi" | ".appimage",
+): GithubReleaseAsset | null {
+  const matches = assets.filter((asset) =>
+    asset.name.toLowerCase().endsWith(extension),
+  );
+  if (!matches.length) return null;
+
+  return [...matches].sort((a, b) => scoreAssetName(b.name) - scoreAssetName(a.name))[0];
+}
+
+function toBinaryReleaseAsset(
+  asset: GithubReleaseAsset | null,
+): BinaryReleaseAsset | null {
+  if (!asset) return null;
+
+  return {
+    fileName: asset.name,
+    downloadUrl: asset.browser_download_url,
+    sha256: parseSha256Digest(asset.digest),
+  };
+}
 
 /* ------------------------------------------------------------------ */
 /*  Copy button                                                        */
@@ -195,20 +267,52 @@ function StepNumber({ n }: { n: number }) {
 /*  Windows / Linux download card                                      */
 /* ------------------------------------------------------------------ */
 
-function BinaryDownload({ os }: { os: "windows" | "linux" }) {
+function BinaryDownload({
+  os,
+  releaseAssets,
+}: {
+  os: "windows" | "linux";
+  releaseAssets: ReleaseAssets;
+}) {
   const meta = OS_META[os];
   const ext = os === "windows" ? ".msi" : ".AppImage";
   const Icon = meta.icon;
+  const binaryAsset = os === "windows" ? releaseAssets.windows : releaseAssets.linux;
+  const fileName =
+    binaryAsset?.fileName ??
+    meta.fileName ??
+    (os === "windows" ? "VibeFi.msi" : "VibeFi.AppImage");
+  const downloadUrl = binaryAsset?.downloadUrl ?? releaseAssets.releaseUrl;
+  const missingDirectAsset = !binaryAsset && !releaseAssets.loading;
 
   return (
     <div>
       <a
-        href={`https://releases.vibefi.dev/latest/${meta.fileName}`}
+        href={downloadUrl}
         className="inline-flex h-12 items-center gap-3 rounded-lg bg-teal-accent px-7 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
       >
         <Icon size={18} />
-        Download {meta.fileName}
+        Download {fileName}
       </a>
+      {releaseAssets.tag && (
+        <p className="mt-3 text-[12px] text-ink-muted">
+          Latest GitHub release:{" "}
+          <a
+            href={releaseAssets.releaseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-teal-accent underline-offset-2 hover:underline"
+          >
+            {releaseAssets.tag}
+          </a>
+        </p>
+      )}
+      {missingDirectAsset && (
+        <p className="mt-2 text-[12px] text-ink-muted">
+          Direct {ext} asset was not found in the latest release. The link
+          above opens the release page.
+        </p>
+      )}
       <div className="mt-4 rounded-lg border border-border bg-surface-alt p-4">
         <p className="text-[13px] leading-relaxed text-ink-muted">
           {os === "windows" ? (
@@ -225,7 +329,7 @@ function BinaryDownload({ os }: { os: "windows" | "linux" }) {
             <>
               Make the file executable:{" "}
               <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
-                chmod +x {meta.fileName}
+                chmod +x {fileName}
               </code>{" "}
               then run it. On some distros you may need to install FUSE:{" "}
               <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
@@ -298,7 +402,17 @@ function SourceBuildOption() {
   );
 }
 
-function DownloadChecksums() {
+function DownloadChecksums({
+  entries,
+  releaseTag,
+  releaseUrl,
+  error,
+}: {
+  entries: readonly ChecksumEntry[];
+  releaseTag: string | null;
+  releaseUrl: string;
+  error: string | null;
+}) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -332,13 +446,42 @@ function DownloadChecksums() {
             comparing the SHA256 checksums below. If you are a technical user,
             we recommend building from source.
           </p>
+          <p className="mt-2 text-[12px] text-ink-muted">
+            Windows and Linux checksums are loaded from GitHub release metadata
+            {releaseTag ? (
+              <>
+                {" "}
+                (
+                <a
+                  href={releaseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal-accent underline-offset-2 hover:underline"
+                >
+                  {releaseTag}
+                </a>
+                ).
+              </>
+            ) : (
+              "."
+            )}
+          </p>
+          {error && (
+            <p className="mt-2 text-[12px] text-ink-muted">
+              Could not load latest release metadata ({error}).
+            </p>
+          )}
           <ul className="mt-4 flex flex-col gap-3">
-            {DOWNLOAD_SHA256_PLACEHOLDERS.map((entry) => (
+            {entries.map((entry) => (
               <li key={entry.label}>
                 <p className="text-[13px] text-ink-muted">{entry.label}</p>
                 <div className="mt-1 flex items-center justify-between rounded-md border border-border bg-surface px-3 py-2">
                   <code className="text-[12px] text-ink">{entry.sum}</code>
-                  <CopyButton text={entry.sum} />
+                  {entry.copyable ? (
+                    <CopyButton text={entry.sum} />
+                  ) : (
+                    <span className="text-[11px] text-ink-faint">N/A</span>
+                  )}
                 </div>
               </li>
             ))}
@@ -424,6 +567,93 @@ function OsTabs({
 export function Download() {
   const detected = useMemo(detectOS, []);
   const [os, setOs] = useState<OS>(detected);
+  const [releaseAssets, setReleaseAssets] = useState<ReleaseAssets>({
+    loading: true,
+    error: null,
+    tag: null,
+    releaseUrl: GITHUB_RELEASES_PAGE,
+    windows: null,
+    linux: null,
+  });
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadLatestRelease() {
+      try {
+        const response = await fetch(GITHUB_RELEASES_API, {
+          headers: { Accept: "application/vnd.github+json" },
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`GitHub API ${response.status}`);
+        }
+
+        const release = (await response.json()) as GithubLatestRelease;
+        const windowsAsset = findReleaseAsset(release.assets, ".msi");
+        const linuxAsset = findReleaseAsset(release.assets, ".appimage");
+
+        setReleaseAssets({
+          loading: false,
+          error: null,
+          tag: release.tag_name,
+          releaseUrl: release.html_url || GITHUB_RELEASES_PAGE,
+          windows: toBinaryReleaseAsset(windowsAsset),
+          linux: toBinaryReleaseAsset(linuxAsset),
+        });
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+
+        const message = error instanceof Error ? error.message : "unknown";
+        setReleaseAssets({
+          loading: false,
+          error: message,
+          tag: null,
+          releaseUrl: GITHUB_RELEASES_PAGE,
+          windows: null,
+          linux: null,
+        });
+      }
+    }
+
+    void loadLatestRelease();
+    return () => controller.abort();
+  }, []);
+
+  const checksumEntries = useMemo<ChecksumEntry[]>(() => {
+    return [
+      {
+        label: "macOS installer script (install.vibefi.dev)",
+        sum: "Verified by installer script during download",
+        copyable: false,
+      },
+      {
+        label: releaseAssets.windows
+          ? `Windows installer (${releaseAssets.windows.fileName})`
+          : "Windows installer (.msi)",
+        sum:
+          releaseAssets.windows?.sha256 ??
+          (releaseAssets.loading
+            ? "Loading from GitHub..."
+            : "SHA256 unavailable"),
+        copyable: Boolean(releaseAssets.windows?.sha256),
+      },
+      {
+        label: releaseAssets.linux
+          ? `Linux AppImage (${releaseAssets.linux.fileName})`
+          : "Linux AppImage (.AppImage)",
+        sum:
+          releaseAssets.linux?.sha256 ??
+          (releaseAssets.loading
+            ? "Loading from GitHub..."
+            : "SHA256 unavailable"),
+        copyable: Boolean(releaseAssets.linux?.sha256),
+      },
+    ];
+  }, [releaseAssets]);
 
   return (
     <>
@@ -460,8 +690,12 @@ export function Download() {
             </div>
             <div className="space-y-5 px-5 py-6 sm:px-6">
               {os === "macos" && <MacGuide />}
-              {os === "windows" && <BinaryDownload os="windows" />}
-              {os === "linux" && <BinaryDownload os="linux" />}
+              {os === "windows" && (
+                <BinaryDownload os="windows" releaseAssets={releaseAssets} />
+              )}
+              {os === "linux" && (
+                <BinaryDownload os="linux" releaseAssets={releaseAssets} />
+              )}
             </div>
           </div>
 
@@ -518,7 +752,12 @@ export function Download() {
             </ul>
 
             <div className="mt-6 space-y-4 border-t border-border/80 pt-6">
-              <DownloadChecksums />
+              <DownloadChecksums
+                entries={checksumEntries}
+                releaseTag={releaseAssets.tag}
+                releaseUrl={releaseAssets.releaseUrl}
+                error={releaseAssets.error}
+              />
               <SourceBuildOption />
             </div>
           </div>
