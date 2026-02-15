@@ -41,9 +41,9 @@ const OS_META: Record<
   linux: { label: "Linux", icon: Terminal, fileName: "VibeFi-latest.AppImage" },
 };
 
-const GITHUB_RELEASES_API =
-  "https://api.github.com/repos/vibefi/client/releases/latest";
-const GITHUB_RELEASES_PAGE = "https://github.com/vibefi/client/releases/latest";
+const GITHUB_RELEASE_REPO = "vibefi/client-staging-public";
+const GITHUB_RELEASES_API = `https://api.github.com/repos/${GITHUB_RELEASE_REPO}/releases/latest`;
+const GITHUB_RELEASES_PAGE = `https://github.com/${GITHUB_RELEASE_REPO}/releases/latest`;
 
 type GithubReleaseAsset = {
   name: string;
@@ -99,6 +99,10 @@ function scoreAssetName(name: string): number {
 
   if (lower.includes("arm64") || lower.includes("aarch64")) {
     score -= 3;
+  }
+
+  if (lower.includes("en-us")) {
+    score += 1;
   }
 
   return score;
