@@ -9,8 +9,8 @@ type NavLink =
 
 const NAV_LINKS: NavLink[] = [
   { label: "Why Now", href: "/#why-now" },
-  { label: "Features", href: "/#features" },
   { label: "How It Works", href: "/#how-it-works" },
+  { label: "Features", href: "/#features" },
   { label: "Download", to: "/download" },
   {
     label: "Docs",

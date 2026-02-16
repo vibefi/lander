@@ -338,17 +338,17 @@ function BinaryDownload({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <a
           href={linuxDebAsset?.downloadUrl ?? releaseAssets.releaseUrl}
-          className="vf-gradient-button inline-flex h-12 items-center gap-3 rounded-lg px-7 text-[15px] font-medium transition duration-150"
+          className="vf-gradient-button inline-flex h-12 items-center justify-center gap-3 rounded-lg px-7 text-[15px] font-medium transition duration-150"
         >
           <Package size={18} />
           Download {debFileName}
         </a>
         <a
           href={linuxAppImageAsset?.downloadUrl ?? releaseAssets.releaseUrl}
-          className="inline-flex h-12 items-center gap-3 rounded-lg border border-border bg-surface px-7 text-[15px] font-medium text-ink transition-colors duration-150 hover:bg-white"
+          className="vf-gradient-button inline-flex h-12 items-center justify-center gap-3 rounded-lg px-7 text-[15px] font-medium transition duration-150"
         >
           <Terminal size={18} />
           Download {appImageFileName}
