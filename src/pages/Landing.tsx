@@ -55,7 +55,7 @@ function ArchitectureDiagram() {
     { x: 195, label: "CLI", sub: "validate + pack" },
     { x: 340, label: "IPFS", sub: "rootCid" },
     { x: 485, label: "Governor", sub: "propose → vote" },
-    { x: 630, label: "Registry", sub: "on-chain CID" },
+    { x: 630, label: "Registry", sub: "onchain CID" },
     { x: 770, label: "Client", sub: "fetch → verify → run" },
   ];
 
@@ -221,7 +221,7 @@ function Hero() {
           DeFi frontends you can verify, governed by the people who use them.
         </h1>
         <p className="mt-7 max-w-[560px] text-[16px] leading-[1.7] text-ink-muted">
-          On-chain governance decides which frontend versions are approved.
+          Onchain governance decides which frontend versions are approved.
           Content-addressed bundles are fetched from IPFS, verified against a
           manifest, built locally, and served in a sandboxed runtime with zero
           outbound network access. LLMs now accelerate both frontend code
@@ -285,7 +285,7 @@ function Problem() {
           <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
             Source is packaged under strict constraints and published to IPFS. A
             governance proposal (propose → vote → timelock → execute) writes the
-            content root on-chain. The client fetches by CID, verifies every
+            content root onchain. The client fetches by CID, verifies every
             file against a manifest, builds locally, and serves in a sandboxed
             webview with{" "}
             <code className="rounded bg-surface px-1.5 py-0.5 font-mono text-[13px]">
@@ -374,7 +374,7 @@ const STEPS = [
   {
     icon: Vote,
     title: "Govern",
-    desc: "A governance proposal targets the on-chain DappRegistry. Token holders vote, the proposal queues through a timelock, and execution writes the approved CID.",
+    desc: "A governance proposal targets the onchain DappRegistry. Token holders vote, the proposal queues through a timelock, and execution writes the approved CID.",
   },
   {
     icon: ShieldCheck,
@@ -545,7 +545,7 @@ function TechnicalSnippet() {
             </p>
             <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
               Dependencies are pinned to exact versions. The allowlist is stored
-              on-chain via the ConstraintsRegistry and updatable only through
+              onchain via the ConstraintsRegistry and updatable only through
               governance.
             </p>
           </div>
