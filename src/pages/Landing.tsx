@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Package,
   Vote,
@@ -13,9 +13,6 @@ import {
   EyeOff,
   Globe,
   Infinity,
-  Ban,
-  Eye,
-  ServerOff,
 } from "lucide-react";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
@@ -317,111 +314,26 @@ const VALUE_PROPS = [
     icon: EyeOff,
     headline: "Your wallet, your business.",
     body: "No analytics scripts, no fingerprinting, no tracking pixels. Dapps run in a sandboxed webview with zero outbound HTTP — the only external calls are the RPC requests you choose to make.",
-    contrast: { bad: "Tracking scripts phone home on every click", icon: Eye },
   },
   {
     icon: Globe,
     headline: "No domain to seize, no server to block.",
     body: "Approved source lives on IPFS and is referenced by an onchain CID. There is no DNS, no hosting provider, and no single point of takedown. If Ethereum and IPFS are reachable, so is your frontend.",
-    contrast: { bad: "One subpoena takes down the domain", icon: Ban },
   },
   {
     icon: Infinity,
     headline: "Frontends that outlive their teams.",
     body: "When a project winds down, its centralized frontend goes with it — sometimes while the contracts still hold your funds. VibeFi dapps are immutable, content-addressed, and available as long as a single IPFS node pins them.",
-    contrast: { bad: "Team disbands, frontend vanishes", icon: ServerOff },
   },
 ] as const;
 
-/* Revision 1 — Statement stack */
-function Revision1() {
-  return (
-    <div className="space-y-0">
-      {VALUE_PROPS.map((prop, i) => (
-        <div
-          key={prop.headline}
-          className={cn(
-            "grid gap-4 py-10 md:grid-cols-2 md:gap-12",
-            i !== VALUE_PROPS.length - 1 && "border-b border-border",
-          )}
-        >
-          <h3 className="text-[22px] font-semibold leading-snug text-ink">
-            {prop.headline}
-          </h3>
-          <p className="text-[15px] leading-relaxed text-ink-muted">
-            {prop.body}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* Revision 2 — Icon rail */
-function Revision2() {
-  return (
-    <div className="grid gap-10 md:grid-cols-3">
-      {VALUE_PROPS.map((prop) => (
-        <div key={prop.headline} className="border-l-2 border-teal-accent pl-5">
-          <prop.icon size={28} className="text-teal-accent" />
-          <h3 className="mt-4 text-[17px] font-semibold text-ink">
-            {prop.headline}
-          </h3>
-          <p className="mt-3 text-[14px] leading-relaxed text-ink-muted">
-            {prop.body}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* Revision 3 — Staggered alternating blocks */
-function Revision3() {
-  return (
-    <div className="space-y-0">
-      {VALUE_PROPS.map((prop, i) => {
-        const flipped = i % 2 === 1;
-        return (
-          <div
-            key={prop.headline}
-            className={cn(
-              "grid items-center gap-6 border-t border-border py-12 md:grid-cols-[1fr_1.5fr] md:gap-16",
-              flipped && "md:grid-cols-[1.5fr_1fr]",
-            )}
-          >
-            <div className={cn("flex items-start gap-4", flipped && "md:order-2")}>
-              <prop.icon size={24} className="mt-1 shrink-0 text-teal-accent" />
-              <h3 className="text-[20px] font-semibold leading-snug text-ink">
-                {prop.headline}
-              </h3>
-            </div>
-            <p
-              className={cn(
-                "text-[15px] leading-relaxed text-ink-muted",
-                flipped && "md:order-1",
-              )}
-            >
-              {prop.body}
-            </p>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/* Revision 4 — Ticker / marquee reveal */
+/* Ticker / typewriter reveal */
 function TypewriterHeadline({ text, trigger }: { text: string; trigger: boolean }) {
   const [count, setCount] = useState(0);
   const done = count >= text.length;
 
   useEffect(() => {
-    if (!trigger) {
-      setCount(0);
-      return;
-    }
-    if (done) return;
+    if (!trigger || done) return;
     const id = setTimeout(() => setCount((c) => c + 1), 40);
     return () => clearTimeout(id);
   }, [trigger, count, done, text.length]);
@@ -438,7 +350,7 @@ function TypewriterHeadline({ text, trigger }: { text: string; trigger: boolean 
   );
 }
 
-function Revision4() {
+function ValuePropsContent() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -504,7 +416,7 @@ function TickerItem({
       </h3>
       <p
         className={cn(
-          "mt-4 max-w-[640px] text-[15px] leading-relaxed text-ink-muted transition-opacity duration-500",
+          "mt-4 text-[15px] leading-relaxed text-ink-muted transition-opacity duration-500",
           headlineDone ? "opacity-100" : "opacity-0",
         )}
       >
@@ -514,125 +426,7 @@ function TickerItem({
   );
 }
 
-/* Revision 5 — Comparison strip */
-function Revision5() {
-  return (
-    <div>
-      {/* Header row */}
-      <div className="grid grid-cols-2 gap-4 border-b border-border pb-4">
-        <p className="text-[13px] font-semibold uppercase tracking-wider text-ink-faint">
-          Today's DeFi frontends
-        </p>
-        <p className="text-[13px] font-semibold uppercase tracking-wider text-teal-accent">
-          VibeFi
-        </p>
-      </div>
-
-      {VALUE_PROPS.map((prop) => {
-        const BadIcon = prop.contrast.icon;
-        return (
-          <div
-            key={prop.headline}
-            className="grid grid-cols-2 gap-4 border-b border-border py-8"
-          >
-            {/* Status quo */}
-            <div className="flex items-start gap-3">
-              <BadIcon size={18} className="mt-0.5 shrink-0 text-red-400" />
-              <p className="text-[15px] leading-relaxed text-red-400">
-                {prop.contrast.bad}
-              </p>
-            </div>
-            {/* VibeFi */}
-            <div className="flex items-start gap-3">
-              <prop.icon size={18} className="mt-0.5 shrink-0 text-teal-accent" />
-              <div>
-                <p className="text-[15px] font-semibold text-ink">
-                  {prop.headline}
-                </p>
-                <p className="mt-1 text-[13px] leading-relaxed text-ink-muted">
-                  {prop.body}
-                </p>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/* Revision switcher */
-const REVISIONS = [
-  { label: "Rev 1", component: Revision1 },
-  { label: "Rev 2", component: Revision2 },
-  { label: "Rev 3", component: Revision3 },
-  { label: "Rev 4", component: Revision4 },
-  { label: "Rev 5", component: Revision5 },
-] as const;
-
-function RevisionSwitcher({
-  current,
-  onChange,
-}: {
-  current: number;
-  onChange: (i: number) => void;
-}) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [pill, setPill] = useState({ left: 0, width: 0 });
-
-  useLayoutEffect(() => {
-    function updatePill() {
-      const container = containerRef.current;
-      if (!container) return;
-      const active = container.querySelector<HTMLButtonElement>(
-        `button[data-rev="${current}"]`,
-      );
-      if (!active) return;
-      setPill({ left: active.offsetLeft, width: active.offsetWidth });
-    }
-    updatePill();
-    window.addEventListener("resize", updatePill);
-    return () => window.removeEventListener("resize", updatePill);
-  }, [current]);
-
-  return (
-    <div
-      ref={containerRef}
-      className="relative inline-flex rounded-lg border border-border bg-surface-alt p-1"
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute bottom-1 top-1 rounded-md bg-teal-accent transition-[transform,width,opacity] duration-300 ease-out"
-        style={{
-          width: pill.width,
-          transform: `translateX(${pill.left}px)`,
-          opacity: pill.width ? 1 : 0,
-        }}
-      />
-      {REVISIONS.map((rev, i) => (
-        <button
-          key={rev.label}
-          data-rev={i}
-          onClick={() => onChange(i)}
-          className={cn(
-            "relative z-10 rounded-md px-4 py-1.5 text-[13px] font-medium transition-colors duration-200",
-            i === current
-              ? "text-white"
-              : "text-ink-muted hover:text-ink",
-          )}
-          aria-pressed={i === current}
-        >
-          {rev.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
 function ValueProps() {
-  const [revision, setRevision] = useState(0);
-  const ActiveRevision = REVISIONS[revision].component;
-
   return (
     <section className="border-b border-border px-6 py-20 sm:py-24">
       <div className="mx-auto max-w-[1152px]">
@@ -647,12 +441,8 @@ function ValueProps() {
           there's no centralized server in the loop.
         </p>
 
-        <div className="mt-8">
-          <RevisionSwitcher current={revision} onChange={setRevision} />
-        </div>
-
         <div className="mt-10">
-          <ActiveRevision />
+          <ValuePropsContent />
         </div>
       </div>
     </section>
@@ -685,7 +475,7 @@ function WhyNow() {
   return (
     <section
       id="why-now"
-      className="scroll-mt-16 px-6 py-20 sm:py-24"
+      className="scroll-mt-16 border-b border-border px-6 py-20 sm:py-24"
     >
       <div className="mx-auto max-w-[1152px]">
         <p className="text-[12px] font-medium uppercase tracking-wider text-ink-faint">
