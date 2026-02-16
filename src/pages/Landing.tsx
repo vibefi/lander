@@ -274,7 +274,7 @@ function Problem() {
             You trust the deploy pipeline more than the code.
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
-            Every DeFi frontend runs on a centralized host — Vercel, Cloudflare,
+            Every DeFi frontend runs on a centralized host: Vercel, Cloudflare,
             a dev team's server. A compromised deploy key, a rogue CDN config,
             or a supply-chain attack can swap the interface without touching the
             contracts. People and agents have no way to verify what code their
@@ -313,7 +313,7 @@ const VALUE_PROPS = [
   {
     icon: EyeOff,
     headline: "Your wallet, your business.",
-    body: "No analytics scripts, no fingerprinting, no tracking pixels. Dapps run in a sandboxed webview with zero outbound HTTP — the only external calls are the RPC requests you choose to make.",
+    body: "No analytics scripts, no fingerprinting, no tracking pixels. Dapps run in a sandboxed webview with zero outbound HTTP. The only external calls are the RPC requests you choose to make.",
   },
   {
     icon: Globe,
@@ -323,7 +323,7 @@ const VALUE_PROPS = [
   {
     icon: Infinity,
     headline: "Frontends that outlive their teams.",
-    body: "When a project winds down, its centralized frontend goes with it — sometimes while the contracts still hold your funds. VibeFi dapps are immutable, content-addressed, and available as long as a single IPFS node pins them.",
+    body: "When a project winds down, its centralized frontend goes with it, sometimes while the contracts still hold your funds. VibeFi dapps are immutable, content-addressed, and available as long as a single IPFS node pins them.",
   },
 ] as const;
 
@@ -434,7 +434,7 @@ function ValueProps() {
           What this means for you
         </p>
         <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
-          Privacy, censorship resistance, and permanence — by default.
+          Privacy, censorship resistance, and permanence, by default.
         </h2>
         <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
           VibeFi doesn't just verify frontends. It changes what's possible when
@@ -691,7 +691,7 @@ function TechnicalSnippet() {
               </code>{" "}
               listing every file and its byte count. The client verifies each
               entry on disk after IPFS fetch. Identical source always produces
-              the same manifest — and therefore the same CID.
+              the same manifest, and therefore the same CID.
             </p>
             <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
               Dependencies are pinned to exact versions. The allowlist is stored
@@ -727,7 +727,7 @@ function CtaBand() {
           VibeFi is open source.
         </h2>
         <p className="mx-auto mt-3 max-w-[480px] text-[15px] leading-relaxed text-ink-muted">
-          Solidity contracts, Rust client, TypeScript CLI, and example dapps —
+          Solidity contracts, Rust client, TypeScript CLI, and example dapps,
           all in one monorepo. Read the code, run the local stack, or start
           contributing as a person or agent.
         </p>
