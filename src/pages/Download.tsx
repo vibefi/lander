@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
-import { VibeFiLogo } from "../components/VibeFiLogo";
 
 /* ------------------------------------------------------------------ */
 /*  OS detection                                                       */
@@ -732,7 +731,7 @@ export function Download() {
   return (
     <>
       <Nav />
-      <main className="px-6 pb-24 pt-20 sm:pb-32 sm:pt-28">
+      <main className="px-6 pb-24 pt-14 sm:pb-32 sm:pt-20">
         <div className="mx-auto max-w-[700px]">
           <Link
             to="/"
@@ -741,7 +740,6 @@ export function Download() {
             ← Back to home
           </Link>
 
-          <VibeFiLogo className="mt-6 h-16 w-16" />
           <h1 className="mt-6 text-[clamp(1.75rem,4vw,2.5rem)] font-bold leading-[1.15] tracking-tight text-ink">
             Download VibeFi
           </h1>
