@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { VibeFiLogo } from "./VibeFiLogo";
 
 const COLUMNS = [
   {
@@ -50,9 +51,12 @@ export function Footer() {
       <div className="mx-auto max-w-[1152px] px-6 py-16">
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
           <div className="col-span-2 sm:col-span-1">
-            <p className="text-[15px] font-semibold tracking-tight text-ink">
-              VibeFi
-            </p>
+            <div className="flex items-center gap-2">
+              <VibeFiLogo className="h-10 w-10" />
+              <p className="vf-gradient-text text-[18px] font-semibold tracking-tight">
+                VibeFi
+              </p>
+            </div>
             <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
               Decentralized governance
               <br />

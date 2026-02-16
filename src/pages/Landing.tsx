@@ -33,7 +33,7 @@ function DotGrid() {
             height="20"
             patternUnits="userSpaceOnUse"
           >
-            <circle cx="1" cy="1" r="1" fill="#a8a29e" opacity="0.4" />
+            <circle cx="1" cy="1" r="1" fill="#64748b" opacity="0.4" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#dot-grid)" />
@@ -79,10 +79,10 @@ function ArchitectureDiagram() {
         <defs>
           {/* Animated pulse that travels the line */}
           <linearGradient id="pulse-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#1a6b5a" stopOpacity="0" />
-            <stop offset="40%" stopColor="#1a6b5a" stopOpacity="0.8" />
-            <stop offset="60%" stopColor="#1a6b5a" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#1a6b5a" stopOpacity="0" />
+            <stop offset="0%" stopColor="#06B6D4" stopOpacity="0" />
+            <stop offset="40%" stopColor="#06B6D4" stopOpacity="0.8" />
+            <stop offset="60%" stopColor="#06B6D4" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#06B6D4" stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -92,7 +92,7 @@ function ArchitectureDiagram() {
           y1={38}
           x2={lineEnd}
           y2={38}
-          stroke="#d6d3d1"
+          stroke="#cbd5e1"
           strokeWidth="1.5"
         />
 
@@ -120,7 +120,7 @@ function ArchitectureDiagram() {
             <polygon
               key={i}
               points={`${midX - 3.5},33.5 ${midX + 4},38 ${midX - 3.5},42.5`}
-              fill="#a8a29e"
+              fill="#64748b"
             />
           );
         })}
@@ -138,7 +138,7 @@ function ArchitectureDiagram() {
             <g key={node.label}>
               {/* Ping ring on last node */}
               {isLast && (
-                <circle cx={node.x} cy={38} r={7} fill="#1a6b5a" opacity="0">
+                <circle cx={node.x} cy={38} r={7} fill="#22C55E" opacity="0">
                   <animate
                     attributeName="r"
                     values="7;7;16;7;7"
@@ -162,16 +162,16 @@ function ArchitectureDiagram() {
                 cy={38}
                 r={isFirst || isLast ? 7 : 5.5}
                 fill={
-                  isLast ? "#1a6b5a" : isFirst ? "#1c1917" : "#fafaf9"
+                  isLast ? "#22C55E" : isFirst ? "#0f172a" : "#f8fbff"
                 }
-                stroke={isLast ? "#1a6b5a" : isFirst ? "#1c1917" : "#78716c"}
+                stroke={isLast ? "#22C55E" : isFirst ? "#0f172a" : "#64748b"}
                 strokeWidth={isFirst || isLast ? 0 : 1.5}
               >
                 {/* Brief highlight when pulse passes */}
                 {!isFirst && !isLast && (
                   <animate
                     attributeName="fill"
-                    values="#fafaf9;#fafaf9;#1a6b5a;#fafaf9;#fafaf9"
+                    values="#f8fbff;#f8fbff;#06B6D4;#f8fbff;#f8fbff"
                     keyTimes={`0;${overlapStart};${overlapMid};${overlapEnd};1`}
                     dur={`${pulseDuration}s`}
                     begin="0s"
@@ -217,9 +217,6 @@ function Hero() {
     <section className="relative px-6 pb-24 pt-28 sm:pb-32 sm:pt-36">
       <DotGrid />
       <div className="relative mx-auto max-w-[1152px]">
-        <p className="text-[13px] font-medium uppercase tracking-wider text-teal-accent">
-          Open-source protocol
-        </p>
         <h1 className="mt-5 max-w-[720px] text-[clamp(2.25rem,5.5vw,3.5rem)] font-bold leading-[1.12] tracking-tight text-ink">
           DeFi frontends you can verify, governed by the people who use them.
         </h1>
@@ -234,7 +231,7 @@ function Hero() {
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
             href="/download"
-            className="inline-flex h-11 items-center rounded-lg bg-teal-accent px-6 text-[14px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
+            className="vf-gradient-button inline-flex h-11 items-center rounded-lg px-6 text-[14px] font-medium transition duration-150"
           >
             Download
           </a>
@@ -553,12 +550,12 @@ function TechnicalSnippet() {
             </p>
           </div>
           <div className="overflow-hidden rounded-lg border border-border bg-[#1c1917]">
-            <div className="flex items-center gap-2 border-b border-[#2e2a27] px-4 py-2.5">
-              <span className="text-[12px] font-medium text-[#a8a29e]">
+            <div className="flex items-center gap-2 border-b border-[#1e293b] px-4 py-2.5">
+              <span className="text-[12px] font-medium text-[#94a3b8]">
                 manifest.json
               </span>
             </div>
-            <pre className="overflow-x-auto p-4 text-[13px] leading-relaxed text-[#d6d3d1]">
+            <pre className="overflow-x-auto bg-[#0b1120] p-4 text-[13px] leading-relaxed text-[#e2e8f0]">
               <code>{MANIFEST_EXAMPLE}</code>
             </pre>
           </div>
@@ -587,7 +584,7 @@ function CtaBand() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
             href="https://docs.vibefi.workers.dev/docs/"
-            className="inline-flex h-10 items-center rounded-lg bg-teal-accent px-5 text-[14px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
+            className="vf-gradient-button inline-flex h-10 items-center rounded-lg px-5 text-[14px] font-medium transition duration-150"
           >
             Read the docs
           </a>

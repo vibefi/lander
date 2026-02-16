@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
+import { VibeFiLogo } from "../components/VibeFiLogo";
 
 /* ------------------------------------------------------------------ */
 /*  OS detection                                                       */
@@ -151,7 +152,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#a8a29e] transition-colors duration-150 hover:bg-[#2e2a27] hover:text-[#d6d3d1]"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#94a3b8] transition-colors duration-150 hover:bg-[#1e293b] hover:text-[#e2e8f0]"
       aria-label="Copy to clipboard"
     >
       {copied ? <Check size={15} /> : <Copy size={15} />}
@@ -167,18 +168,18 @@ function MacGuide() {
   return (
     <div className="space-y-4">
       {/* Command block */}
-      <div className="overflow-hidden rounded-lg border border-[#2e2a27] bg-[#1c1917]">
-        <div className="flex items-center justify-between border-b border-[#2e2a27] px-4 py-2.5">
+      <div className="overflow-hidden rounded-lg border border-[#1e293b] bg-[#0b1120]">
+        <div className="flex items-center justify-between border-b border-[#1e293b] px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <Terminal size={14} className="text-[#a8a29e]" />
-            <span className="text-[12px] font-medium text-[#a8a29e]">
+            <Terminal size={14} className="text-[#94a3b8]" />
+            <span className="text-[12px] font-medium text-[#94a3b8]">
               Terminal
             </span>
           </div>
           <CopyButton text={CURL_CMD} />
         </div>
         <div className="px-4 py-4">
-          <code className="text-[14px] leading-relaxed text-[#d6d3d1]">
+          <code className="text-[14px] leading-relaxed text-[#e2e8f0]">
             {CURL_CMD}
           </code>
         </div>
@@ -289,7 +290,7 @@ function BinaryDownload({
       <div>
         <a
           href={windowsAsset?.downloadUrl ?? releaseAssets.releaseUrl}
-          className="inline-flex h-12 items-center gap-3 rounded-lg bg-teal-accent px-7 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
+          className="vf-gradient-button inline-flex h-12 items-center gap-3 rounded-lg px-7 text-[15px] font-medium transition duration-150"
         >
           <Monitor size={18} />
           Download {fileName}
@@ -340,7 +341,7 @@ function BinaryDownload({
       <div className="flex flex-wrap gap-3">
         <a
           href={linuxDebAsset?.downloadUrl ?? releaseAssets.releaseUrl}
-          className="inline-flex h-12 items-center gap-3 rounded-lg bg-teal-accent px-7 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-teal-accent-hover"
+          className="vf-gradient-button inline-flex h-12 items-center gap-3 rounded-lg px-7 text-[15px] font-medium transition duration-150"
         >
           <Package size={18} />
           Download {debFileName}
@@ -740,6 +741,7 @@ export function Download() {
             ← Back to home
           </Link>
 
+          <VibeFiLogo className="mt-6 h-16 w-16" />
           <h1 className="mt-6 text-[clamp(1.75rem,4vw,2.5rem)] font-bold leading-[1.15] tracking-tight text-ink">
             Download VibeFi
           </h1>
@@ -749,7 +751,7 @@ export function Download() {
             runtime.
           </p>
 
-          <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
             <div className="border-b border-border px-5 py-5 sm:px-6">
               <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                 Installation
