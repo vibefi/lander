@@ -55,161 +55,305 @@ function DotGrid() {
 /* ------------------------------------------------------------------ */
 
 function ArchitectureDiagram() {
-  const nodes = [
-    { x: 60, label: "Developer", sub: "source" },
-    { x: 195, label: "CLI", sub: "validate + pack" },
-    { x: 340, label: "IPFS", sub: "rootCid" },
-    { x: 485, label: "Governor", sub: "propose → vote" },
-    { x: 630, label: "Registry", sub: "onchain CID" },
-    { x: 770, label: "Client", sub: "fetch → verify → run" },
+  const flowNodes = [
+    { label: "Developer", sub: "source" },
+    { label: "CLI", sub: "validate + pack" },
+    { label: "IPFS", sub: "rootCid" },
+    { label: "Governor", sub: "propose → vote" },
+    { label: "Registry", sub: "onchain CID" },
+    { label: "Client", sub: "fetch → verify → run" },
   ];
-
-  const lineStart = nodes[0].x;
-  const lineEnd = nodes[nodes.length - 1].x;
-  const totalLen = lineEnd - lineStart;
-  const pulseWidth = 120;
   const pulseDuration = 3;
-  const pulseTravel = totalLen + pulseWidth;
+
+  const desktopNodes = flowNodes.map((node, i) => ({
+    ...node,
+    x: [60, 195, 340, 485, 630, 770][i],
+  }));
+  const desktopLineStart = desktopNodes[0].x;
+  const desktopLineEnd = desktopNodes[desktopNodes.length - 1].x;
+  const desktopPulseWidth = 120;
+  const desktopPulseTravel =
+    desktopLineEnd - desktopLineStart + desktopPulseWidth;
+
+  const mobileNodes = flowNodes.map((node, i) => ({
+    ...node,
+    y: 36 + i * 58,
+  }));
+  const mobileX = 28;
+  const mobileLineStart = mobileNodes[0].y;
+  const mobileLineEnd = mobileNodes[mobileNodes.length - 1].y;
+  const mobilePulseHeight = 88;
+  const mobilePulseTravel =
+    mobileLineEnd - mobileLineStart + mobilePulseHeight;
 
   return (
-    <div className="mt-14 overflow-x-auto lg:mt-16">
-      <svg
-        viewBox="0 0 830 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="mx-auto h-auto w-full max-w-[830px]"
-        role="img"
-        aria-label="Architecture flow: Developer to CLI to IPFS to Governor to Registry to Client"
-      >
-        <defs>
-          {/* Animated pulse that travels the line */}
-          <linearGradient id="pulse-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#06B6D4" stopOpacity="0" />
-            <stop offset="40%" stopColor="#06B6D4" stopOpacity="0.8" />
-            <stop offset="60%" stopColor="#06B6D4" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#06B6D4" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-
-        {/* Background line */}
-        <line
-          x1={lineStart}
-          y1={38}
-          x2={lineEnd}
-          y2={38}
-          stroke="#cbd5e1"
-          strokeWidth="1.5"
-        />
-
-        {/* Animated pulse traveling the line */}
-        <rect
-          y={36.5}
-          width={pulseWidth}
-          height={3}
-          rx={1.5}
-          fill="url(#pulse-grad)"
+    <>
+      <div className="mt-10 md:hidden">
+        <svg
+          viewBox="0 0 360 340"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-auto w-full"
+          role="img"
+          aria-label="Architecture flow: Developer to CLI to IPFS to Governor to Registry to Client"
         >
-          <animate
-            attributeName="x"
-            values={`${lineStart - pulseWidth};${lineEnd}`}
-            dur={`${pulseDuration}s`}
-            repeatCount="indefinite"
+          <defs>
+            <linearGradient id="pulse-grad-vertical" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#06B6D4" stopOpacity="0" />
+              <stop offset="40%" stopColor="#06B6D4" stopOpacity="0.8" />
+              <stop offset="60%" stopColor="#06B6D4" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#06B6D4" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+
+          <line
+            x1={mobileX}
+            y1={mobileLineStart}
+            x2={mobileX}
+            y2={mobileLineEnd}
+            stroke="#cbd5e1"
+            strokeWidth="1.5"
           />
-        </rect>
 
-        {/* Arrows between nodes */}
-        {nodes.slice(0, -1).map((node, i) => {
-          const nextX = nodes[i + 1].x;
-          const midX = (node.x + nextX) / 2;
-          return (
-            <polygon
-              key={i}
-              points={`${midX - 3.5},33.5 ${midX + 4},38 ${midX - 3.5},42.5`}
-              fill="#64748b"
+          <rect
+            x={mobileX - 1.5}
+            width={3}
+            height={mobilePulseHeight}
+            rx={1.5}
+            fill="url(#pulse-grad-vertical)"
+          >
+            <animate
+              attributeName="y"
+              values={`${mobileLineStart - mobilePulseHeight};${mobileLineEnd}`}
+              dur={`${pulseDuration}s`}
+              repeatCount="indefinite"
             />
-          );
-        })}
+          </rect>
 
-        {/* Nodes */}
-        {nodes.map((node, i) => {
-          const isFirst = i === 0;
-          const isLast = i === nodes.length - 1;
-          const overlapStart = (node.x - lineStart) / pulseTravel;
-          const overlapEnd = (node.x - lineStart + pulseWidth) / pulseTravel;
-          const overlapMid = (overlapStart + overlapEnd) / 2;
-          const ringPeak = overlapStart + (1 - overlapStart) * 0.35;
-          const ringFade = overlapStart + (1 - overlapStart) * 0.65;
-          return (
-            <g key={node.label}>
-              {/* Ping ring on last node */}
-              {isLast && (
-                <circle cx={node.x} cy={38} r={7} fill="#22C55E" opacity="0">
-                  <animate
-                    attributeName="r"
-                    values="7;7;16;7;7"
-                    keyTimes={`0;${overlapStart};${ringPeak};${ringFade};1`}
-                    dur={`${pulseDuration}s`}
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0;0;0.3;0;0"
-                    keyTimes={`0;${overlapStart};${ringPeak};${ringFade};1`}
-                    dur={`${pulseDuration}s`}
-                    repeatCount="indefinite"
-                  />
-                </circle>
-              )}
+          {mobileNodes.slice(0, -1).map((node, i) => {
+            const nextY = mobileNodes[i + 1].y;
+            const midY = (node.y + nextY) / 2;
+            return (
+              <polygon
+                key={i}
+                points={`${mobileX - 4},${midY - 3.5} ${mobileX},${midY + 4} ${mobileX + 4},${midY - 3.5}`}
+                fill="#64748b"
+              />
+            );
+          })}
 
-              {/* Node circle */}
-              <circle
-                cx={node.x}
-                cy={38}
-                r={isFirst || isLast ? 7 : 5.5}
-                fill={
-                  isLast ? "#22C55E" : isFirst ? "#0f172a" : "#f8fbff"
-                }
-                stroke={isLast ? "#22C55E" : isFirst ? "#0f172a" : "#64748b"}
-                strokeWidth={isFirst || isLast ? 0 : 1.5}
-              >
-                {/* Brief highlight when pulse passes */}
-                {!isFirst && !isLast && (
-                  <animate
-                    attributeName="fill"
-                    values="#f8fbff;#f8fbff;#06B6D4;#f8fbff;#f8fbff"
-                    keyTimes={`0;${overlapStart};${overlapMid};${overlapEnd};1`}
-                    dur={`${pulseDuration}s`}
-                    begin="0s"
-                    repeatCount="indefinite"
-                  />
+          {mobileNodes.map((node, i) => {
+            const isFirst = i === 0;
+            const isLast = i === mobileNodes.length - 1;
+            const overlapStart = (node.y - mobileLineStart) / mobilePulseTravel;
+            const overlapEnd =
+              (node.y - mobileLineStart + mobilePulseHeight) / mobilePulseTravel;
+            const overlapMid = (overlapStart + overlapEnd) / 2;
+            const ringPeak = overlapStart + (1 - overlapStart) * 0.35;
+            const ringFade = overlapStart + (1 - overlapStart) * 0.65;
+            return (
+              <g key={node.label}>
+                {isLast && (
+                  <circle cx={mobileX} cy={node.y} r={7} fill="#22C55E" opacity="0">
+                    <animate
+                      attributeName="r"
+                      values="7;7;16;7;7"
+                      keyTimes={`0;${overlapStart};${ringPeak};${ringFade};1`}
+                      dur={`${pulseDuration}s`}
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0;0;0.3;0;0"
+                      keyTimes={`0;${overlapStart};${ringPeak};${ringFade};1`}
+                      dur={`${pulseDuration}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
                 )}
-              </circle>
+                <circle
+                  cx={mobileX}
+                  cy={node.y}
+                  r={isFirst || isLast ? 7 : 5.5}
+                  fill={isLast ? "#22C55E" : isFirst ? "#0f172a" : "#f8fbff"}
+                  stroke={isLast ? "#22C55E" : isFirst ? "#0f172a" : "#64748b"}
+                  strokeWidth={isFirst || isLast ? 0 : 1.5}
+                >
+                  {!isFirst && !isLast && (
+                    <animate
+                      attributeName="fill"
+                      values="#f8fbff;#f8fbff;#06B6D4;#f8fbff;#f8fbff"
+                      keyTimes={`0;${overlapStart};${overlapMid};${overlapEnd};1`}
+                      dur={`${pulseDuration}s`}
+                      begin="0s"
+                      repeatCount="indefinite"
+                    />
+                  )}
+                </circle>
+                <text
+                  x={mobileX + 16}
+                  y={node.y - 2}
+                  textAnchor="start"
+                  className="fill-ink text-[12px] font-semibold"
+                  style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
+                >
+                  {node.label}
+                </text>
+                <text
+                  x={mobileX + 16}
+                  y={node.y + 12}
+                  textAnchor="start"
+                  className="fill-ink-faint text-[9px]"
+                  style={{ fontFamily: "ui-monospace, monospace" }}
+                >
+                  {node.sub}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
 
-              {/* Label */}
-              <text
-                x={node.x}
-                y={66}
-                textAnchor="middle"
-                className="fill-ink text-[11px] font-semibold"
-                style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
-              >
-                {node.label}
-              </text>
-              {/* Sublabel */}
-              <text
-                x={node.x}
-                y={80}
-                textAnchor="middle"
-                className="fill-ink-faint text-[9px]"
-                style={{ fontFamily: "ui-monospace, monospace" }}
-              >
-                {node.sub}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-    </div>
+      <div className="mt-14 hidden overflow-x-auto md:block lg:mt-16">
+        <svg
+          viewBox="0 0 830 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="mx-auto h-auto w-full max-w-[830px]"
+          role="img"
+          aria-label="Architecture flow: Developer to CLI to IPFS to Governor to Registry to Client"
+        >
+          <defs>
+            {/* Animated pulse that travels the line */}
+            <linearGradient id="pulse-grad-horizontal" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#06B6D4" stopOpacity="0" />
+              <stop offset="40%" stopColor="#06B6D4" stopOpacity="0.8" />
+              <stop offset="60%" stopColor="#06B6D4" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#06B6D4" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+
+          {/* Background line */}
+          <line
+            x1={desktopLineStart}
+            y1={38}
+            x2={desktopLineEnd}
+            y2={38}
+            stroke="#cbd5e1"
+            strokeWidth="1.5"
+          />
+
+          {/* Animated pulse traveling the line */}
+          <rect
+            y={36.5}
+            width={desktopPulseWidth}
+            height={3}
+            rx={1.5}
+            fill="url(#pulse-grad-horizontal)"
+          >
+            <animate
+              attributeName="x"
+              values={`${desktopLineStart - desktopPulseWidth};${desktopLineEnd}`}
+              dur={`${pulseDuration}s`}
+              repeatCount="indefinite"
+            />
+          </rect>
+
+          {/* Arrows between nodes */}
+          {desktopNodes.slice(0, -1).map((node, i) => {
+            const nextX = desktopNodes[i + 1].x;
+            const midX = (node.x + nextX) / 2;
+            return (
+              <polygon
+                key={i}
+                points={`${midX - 3.5},33.5 ${midX + 4},38 ${midX - 3.5},42.5`}
+                fill="#64748b"
+              />
+            );
+          })}
+
+          {/* Nodes */}
+          {desktopNodes.map((node, i) => {
+            const isFirst = i === 0;
+            const isLast = i === desktopNodes.length - 1;
+            const overlapStart = (node.x - desktopLineStart) / desktopPulseTravel;
+            const overlapEnd =
+              (node.x - desktopLineStart + desktopPulseWidth) / desktopPulseTravel;
+            const overlapMid = (overlapStart + overlapEnd) / 2;
+            const ringPeak = overlapStart + (1 - overlapStart) * 0.35;
+            const ringFade = overlapStart + (1 - overlapStart) * 0.65;
+            return (
+              <g key={node.label}>
+                {/* Ping ring on last node */}
+                {isLast && (
+                  <circle cx={node.x} cy={38} r={7} fill="#22C55E" opacity="0">
+                    <animate
+                      attributeName="r"
+                      values="7;7;16;7;7"
+                      keyTimes={`0;${overlapStart};${ringPeak};${ringFade};1`}
+                      dur={`${pulseDuration}s`}
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0;0;0.3;0;0"
+                      keyTimes={`0;${overlapStart};${ringPeak};${ringFade};1`}
+                      dur={`${pulseDuration}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                )}
+
+                {/* Node circle */}
+                <circle
+                  cx={node.x}
+                  cy={38}
+                  r={isFirst || isLast ? 7 : 5.5}
+                  fill={
+                    isLast ? "#22C55E" : isFirst ? "#0f172a" : "#f8fbff"
+                  }
+                  stroke={isLast ? "#22C55E" : isFirst ? "#0f172a" : "#64748b"}
+                  strokeWidth={isFirst || isLast ? 0 : 1.5}
+                >
+                  {/* Brief highlight when pulse passes */}
+                  {!isFirst && !isLast && (
+                    <animate
+                      attributeName="fill"
+                      values="#f8fbff;#f8fbff;#06B6D4;#f8fbff;#f8fbff"
+                      keyTimes={`0;${overlapStart};${overlapMid};${overlapEnd};1`}
+                      dur={`${pulseDuration}s`}
+                      begin="0s"
+                      repeatCount="indefinite"
+                    />
+                  )}
+                </circle>
+
+                {/* Label */}
+                <text
+                  x={node.x}
+                  y={66}
+                  textAnchor="middle"
+                  className="fill-ink text-[11px] font-semibold"
+                  style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
+                >
+                  {node.label}
+                </text>
+                {/* Sublabel */}
+                <text
+                  x={node.x}
+                  y={80}
+                  textAnchor="middle"
+                  className="fill-ink-faint text-[9px]"
+                  style={{ fontFamily: "ui-monospace, monospace" }}
+                >
+                  {node.sub}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    </>
   );
 }
 
@@ -242,10 +386,10 @@ function Hero() {
             Download
           </a>
           <a
-            href="https://docs.vibefi.workers.dev/"
+            href="https://docs.vibefi.dev/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 items-center rounded-lg border border-border px-6 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
+            className="inline-flex h-11 items-center rounded-lg border border-border bg-white px-6 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
           >
             Read the docs
           </a>
@@ -733,7 +877,7 @@ function CtaBand() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
-            href="https://docs.vibefi.workers.dev/"
+            href="https://docs.vibefi.dev/"
             className="vf-gradient-button inline-flex h-10 items-center rounded-lg px-5 text-[14px] font-medium transition duration-150"
           >
             Read the docs
@@ -742,7 +886,7 @@ function CtaBand() {
             href="https://github.com/vibefi/monorepo"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-10 items-center rounded-lg border border-border px-5 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
+            className="inline-flex h-10 items-center rounded-lg border border-border bg-white px-5 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
           >
             View on GitHub
           </a>

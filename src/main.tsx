@@ -9,7 +9,6 @@ import { Placeholder } from "./pages/Placeholder";
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
   { path: "/download", element: <Download /> },
-  { path: "/pricing", element: <Placeholder title="Pricing" /> },
   { path: "/changelog", element: <Placeholder title="Changelog" /> },
   { path: "/status", element: <Placeholder title="Status" /> },
 ]);

@@ -8,7 +8,6 @@ const COLUMNS = [
       { label: "Why Now", href: "/#why-now" },
       { label: "Features", href: "/#features" },
       { label: "How It Works", href: "/#how-it-works" },
-      { label: "Pricing", to: "/pricing" },
     ],
   },
   {
@@ -16,11 +15,14 @@ const COLUMNS = [
     links: [
       {
         label: "Documentation",
-        href: "https://docs.vibefi.workers.dev/",
+        href: "https://docs.vibefi.dev/",
         external: true,
       },
-      { label: "Changelog", to: "/changelog" },
-      { label: "Status", to: "/status" },
+      {
+        label: "Telegram",
+        href: "https://t.me/vibefi_dev",
+        external: true,
+      },
     ],
   },
   {
@@ -28,6 +30,11 @@ const COLUMNS = [
     links: [
       {
         label: "GitHub",
+        href: "https://github.com/vibefi",
+        external: true,
+      },
+      {
+        label: "Monorepo",
         href: "https://github.com/vibefi/monorepo",
         external: true,
       },

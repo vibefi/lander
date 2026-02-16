@@ -112,7 +112,7 @@ function scoreAssetName(name: string): number {
 
 function findReleaseAsset(
   assets: GithubReleaseAsset[],
-  extension: ".msi" | ".appimage" | ".deb",
+  extension: ".exe" | ".appimage" | ".deb",
 ): GithubReleaseAsset | null {
   const matches = assets.filter((asset) =>
     asset.name.toLowerCase().endsWith(extension),
@@ -282,7 +282,7 @@ function BinaryDownload({
 }) {
   if (os === "windows") {
     const windowsAsset = releaseAssets.windows;
-    const fileName = windowsAsset?.fileName ?? "VibeFi.msi";
+    const fileName = windowsAsset?.fileName ?? "VibeFi.exe";
     const missingDirectAsset = !windowsAsset && !releaseAssets.loading;
 
     return (
@@ -309,7 +309,7 @@ function BinaryDownload({
         )}
         {missingDirectAsset && (
           <p className="mt-2 text-[12px] text-ink-muted">
-            Direct .msi asset was not found in the latest release. The link
+            Direct .exe asset was not found in the latest release. The link
             above opens the release page.
           </p>
         )}
@@ -317,7 +317,7 @@ function BinaryDownload({
           <p className="text-[13px] leading-relaxed text-ink-muted">
             Run the{" "}
             <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
-              .msi
+              .exe
             </code>{" "}
             installer. Windows may show a SmartScreen warning, click{" "}
             <strong className="text-ink">More info</strong> then{" "}
@@ -649,7 +649,7 @@ export function Download() {
         }
 
         const release = (await response.json()) as GithubLatestRelease;
-        const windowsAsset = findReleaseAsset(release.assets, ".msi");
+        const windowsAsset = findReleaseAsset(release.assets, ".exe");
         const linuxAppImageAsset = findReleaseAsset(release.assets, ".appimage");
         const linuxDebAsset = findReleaseAsset(release.assets, ".deb");
 
@@ -695,7 +695,7 @@ export function Download() {
       {
         label: releaseAssets.windows
           ? `Windows installer (${releaseAssets.windows.fileName})`
-          : "Windows installer (.msi)",
+          : "Windows installer (.exe)",
         sum:
           releaseAssets.windows?.sha256 ??
           (releaseAssets.loading
