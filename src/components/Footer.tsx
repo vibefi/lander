@@ -16,7 +16,7 @@ const COLUMNS = [
     links: [
       {
         label: "Documentation",
-        href: "https://docs.vibefi.workers.dev/docs/",
+        href: "https://docs.vibefi.workers.dev/",
         external: true,
       },
       { label: "Changelog", to: "/changelog" },

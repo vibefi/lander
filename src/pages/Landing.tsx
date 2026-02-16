@@ -237,7 +237,7 @@ function Hero() {
             Download
           </a>
           <a
-            href="https://docs.vibefi.workers.dev/docs/"
+            href="https://docs.vibefi.workers.dev/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex h-11 items-center rounded-lg border border-border px-6 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
@@ -584,7 +584,7 @@ function CtaBand() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
-            href="https://docs.vibefi.workers.dev/docs/"
+            href="https://docs.vibefi.workers.dev/"
             className="vf-gradient-button inline-flex h-10 items-center rounded-lg px-5 text-[14px] font-medium transition duration-150"
           >
             Read the docs

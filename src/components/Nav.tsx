@@ -14,7 +14,7 @@ const NAV_LINKS: NavLink[] = [
   { label: "Download", to: "/download" },
   {
     label: "Docs",
-    href: "https://docs.vibefi.workers.dev/docs/",
+    href: "https://docs.vibefi.workers.dev/",
     external: true,
   },
   {
