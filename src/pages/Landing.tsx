@@ -371,12 +371,10 @@ function Hero() {
           them.
         </h1>
         <p className="mt-7 max-w-[560px] text-[16px] leading-[1.7] text-ink-muted">
-          Onchain governance decides which frontend versions are approved.
-          Content-addressed bundles are fetched from IPFS, verified against a
-          manifest, built locally, and served in a sandboxed runtime with zero
-          outbound network access. LLMs now accelerate both frontend code
-          generation and review, with people and agents shipping changes
-          together, so verifiable distribution is no longer optional.
+          Onchain governance approves frontend versions. Bundles are fetched
+          from IPFS, verified by manifest, built locally, and run in a sandbox
+          with no outbound network access. As humans and agents ship faster
+          with LLMs, verifiable distribution is mandatory.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a

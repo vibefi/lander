@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { VibeFiLogo } from "./VibeFiLogo";
 
 const COLUMNS = [
@@ -38,16 +37,6 @@ const COLUMNS = [
         href: "https://github.com/vibefi/monorepo",
         external: true,
       },
-      {
-        label: "Contracts",
-        href: "https://github.com/vibefi/monorepo/tree/master/contracts",
-        external: true,
-      },
-      {
-        label: "Client",
-        href: "https://github.com/vibefi/monorepo/tree/master/client",
-        external: true,
-      },
     ],
   },
 ] as const;
@@ -78,24 +67,15 @@ export function Footer() {
               <ul className="mt-3 flex flex-col gap-2.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    {"to" in link ? (
-                      <Link
-                        to={link.to}
-                        className="text-[13px] text-ink-muted transition-colors duration-150 hover:text-ink"
-                      >
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <a
-                        href={link.href}
-                        className="text-[13px] text-ink-muted transition-colors duration-150 hover:text-ink"
-                        {...("external" in link
-                          ? { target: "_blank", rel: "noopener noreferrer" }
-                          : {})}
-                      >
-                        {link.label}
-                      </a>
-                    )}
+                    <a
+                      href={link.href}
+                      className="text-[13px] text-ink-muted transition-colors duration-150 hover:text-ink"
+                      {...("external" in link
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                    >
+                      {link.label}
+                    </a>
                   </li>
                 ))}
               </ul>
