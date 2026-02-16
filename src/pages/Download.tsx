@@ -746,7 +746,7 @@ export function Download() {
           <p className="mt-4 max-w-[520px] text-[16px] leading-[1.7] text-ink-muted">
             The desktop client fetches governance-approved frontends from IPFS,
             verifies every file, builds locally, and runs them in a sandboxed
-            runtime.
+            runtime for people and agents.
           </p>
 
           <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_2px_rgba(15,23,42,0.08)]">

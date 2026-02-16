@@ -60,7 +60,7 @@ export function Footer() {
             <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
               Decentralized governance
               <br />
-              for DeFi frontends.
+              for DeFi frontends used by people and agents.
             </p>
           </div>
           {COLUMNS.map((col) => (

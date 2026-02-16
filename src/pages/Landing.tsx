@@ -218,15 +218,16 @@ function Hero() {
       <DotGrid />
       <div className="relative mx-auto max-w-[1152px]">
         <h1 className="mt-5 max-w-[720px] text-[clamp(2.25rem,5.5vw,3.5rem)] font-bold leading-[1.12] tracking-tight text-ink">
-          DeFi frontends you can verify, governed by the people who use them.
+          Verified DeFi frontends, governed by the people and agents who use
+          them.
         </h1>
         <p className="mt-7 max-w-[560px] text-[16px] leading-[1.7] text-ink-muted">
           Onchain governance decides which frontend versions are approved.
           Content-addressed bundles are fetched from IPFS, verified against a
           manifest, built locally, and served in a sandboxed runtime with zero
           outbound network access. LLMs now accelerate both frontend code
-          generation and review, so verifiable distribution is no longer
-          optional.
+          generation and review, with people and agents shipping changes
+          together, so verifiable distribution is no longer optional.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
@@ -271,8 +272,8 @@ function Problem() {
             Every DeFi frontend runs on a centralized host — Vercel, Cloudflare,
             a dev team's server. A compromised deploy key, a rogue CDN config,
             or a supply-chain attack can swap the interface without touching the
-            contracts. Users have no way to verify what code their browser
-            actually runs.
+            contracts. People and agents have no way to verify what code their
+            clients actually run.
           </p>
         </div>
         <div>
@@ -317,7 +318,7 @@ const WHY_NOW_ITEMS = [
   {
     icon: ShieldAlert,
     title: "Distribution risk grows",
-    desc: "When changes move this quickly, centralized deploy pipelines become the weakest link. VibeFi adds governance and verification before users run new code.",
+    desc: "When changes move this quickly, centralized deploy pipelines become the weakest link. VibeFi adds governance and verification before people and agents run new code.",
   },
 ] as const;
 
@@ -374,7 +375,7 @@ const STEPS = [
   {
     icon: Vote,
     title: "Govern",
-    desc: "A governance proposal targets the onchain DappRegistry. Token holders vote, the proposal queues through a timelock, and execution writes the approved CID.",
+    desc: "A governance proposal targets the onchain DappRegistry. Token holders and their agents vote, the proposal queues through a timelock, and execution writes the approved CID.",
   },
   {
     icon: ShieldCheck,
@@ -579,7 +580,7 @@ function CtaBand() {
         <p className="mx-auto mt-3 max-w-[480px] text-[15px] leading-relaxed text-ink-muted">
           Solidity contracts, Rust client, TypeScript CLI, and example dapps —
           all in one monorepo. Read the code, run the local stack, or start
-          contributing.
+          contributing as a person or agent.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
