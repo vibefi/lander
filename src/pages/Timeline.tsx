@@ -29,7 +29,7 @@ type TimelineEvent = {
 };
 
 type SortMode = "date" | "impact";
-type ViewMode = "classic" | "compact" | "dossier" | "signal" | "bubbles";
+type ViewMode = "default" | "cards" | "bubbles";
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -177,136 +177,7 @@ function PillToggle<T extends string>({
 }
 
 /* ================================================================== */
-/*  VIEW 1 — Classic (alternating spine)                               */
-/* ================================================================== */
-
-function ClassicCard({
-  event,
-  side,
-}: {
-  event: TimelineEvent;
-  side: "left" | "right";
-}) {
-  return (
-    <div
-      className={`relative w-full md:w-[calc(50%-24px)] ${
-        side === "left" ? "md:mr-auto" : "md:ml-auto"
-      }`}
-    >
-      <span
-        className={`absolute top-5 hidden h-3 w-3 rounded-full border-2 border-brand-violet bg-surface md:block ${
-          side === "left" ? "-right-[30px]" : "-left-[30px]"
-        }`}
-      />
-      <div className="rounded-xl border border-border bg-surface p-5 transition-colors duration-150 hover:border-border/60 hover:bg-surface-alt/50">
-        <div className="flex flex-wrap items-center gap-2">
-          <CategoryBadge category={event.category} />
-          <span className="text-[12px] text-ink-muted">
-            {formatDate(event.date)}
-          </span>
-        </div>
-        <h3 className="mt-2.5 text-[15px] font-semibold leading-snug text-ink">
-          {event.project}
-        </h3>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-ink-muted">
-          {event.summary}
-        </p>
-        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {event.amountLostDisplay !== "N/A" && (
-            <span className="text-[13px] font-medium text-ink">
-              Lost: {event.amountLostDisplay}
-            </span>
-          )}
-          <ImpactDots score={event.impactScore} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ClassicView({ data }: { data: TimelineEvent[] }) {
-  return (
-    <div className="relative mt-10">
-      <div className="absolute left-3 top-0 bottom-0 w-px bg-border md:left-1/2 md:-translate-x-px" />
-      <div className="flex flex-col gap-8 pl-10 md:pl-0">
-        {data.map((event, i) => (
-          <div key={event.id} className="relative">
-            <span className="absolute -left-[29px] top-5 h-3 w-3 rounded-full border-2 border-brand-violet bg-surface md:hidden" />
-            <ClassicCard
-              event={event}
-              side={i % 2 === 0 ? "left" : "right"}
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ================================================================== */
-/*  VIEW 2 — Compact (dense table-list)                                */
-/* ================================================================== */
-
-function CompactView({ data }: { data: TimelineEvent[] }) {
-  return (
-    <div className="mt-10 overflow-hidden rounded-xl border border-border">
-      {/* Header */}
-      <div className="hidden grid-cols-[100px_1fr_140px_80px] gap-4 border-b border-border bg-surface-alt px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-faint sm:grid">
-        <span>Date</span>
-        <span>Incident</span>
-        <span>Amount Lost</span>
-        <span className="text-right">Impact</span>
-      </div>
-      {data.map((event, i) => (
-        <div
-          key={event.id}
-          className={`group grid grid-cols-1 gap-x-4 gap-y-1 border-b border-border px-5 py-3.5 transition-colors duration-100 last:border-b-0 hover:bg-surface-alt/60 sm:grid-cols-[100px_1fr_140px_80px] sm:items-center ${
-            i % 2 === 0 ? "bg-surface" : "bg-surface-alt/30"
-          }`}
-        >
-          <span className="text-[12px] tabular-nums text-ink-muted">
-            {formatDateShort(event.date)}
-          </span>
-          <div className="flex items-start gap-2.5 sm:items-center">
-            <span
-              className={`mt-1.5 h-2 w-2 shrink-0 rounded-full sm:mt-0 ${CATEGORY_ACCENT[event.category]}`}
-            />
-            <div className="min-w-0">
-              <span className="text-[13px] font-medium text-ink">
-                {event.project}
-              </span>
-              <span className="ml-2 hidden text-[12px] text-ink-muted lg:inline">
-                {event.summary.length > 80
-                  ? event.summary.slice(0, 80) + "…"
-                  : event.summary}
-              </span>
-            </div>
-          </div>
-          <span className="text-[13px] text-ink-muted">
-            {event.amountLostDisplay === "N/A"
-              ? "—"
-              : event.amountLostDisplay}
-          </span>
-          <div className="flex items-center justify-end gap-1.5 sm:justify-end">
-            <div className="flex gap-[2px]">
-              {Array.from({ length: 10 }, (_, j) => (
-                <span
-                  key={j}
-                  className={`inline-block h-1.5 w-1.5 rounded-full ${
-                    j < event.impactScore ? "bg-brand-violet" : "bg-border"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* ================================================================== */
-/*  VIEW 3 — Dossier (classified-document aesthetic)                   */
+/*  VIEW: Default (dossier style, hover-expand)                        */
 /* ================================================================== */
 
 const CATEGORY_STAMP: Record<Category, { text: string; color: string }> = {
@@ -316,79 +187,77 @@ const CATEGORY_STAMP: Record<Category, { text: string; color: string }> = {
   regulatory: { text: "ENFORCEMENT", color: "border-blue-500/50 text-blue-500" },
 };
 
-function DossierView({ data }: { data: TimelineEvent[] }) {
+const MOBILE_BREAKPOINT = 768; // matches Tailwind `md:`
+const AUTO_EXPAND_THRESHOLD = 8; // impact score >= this auto-expands on mobile
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return mobile;
+}
+
+function DefaultView({ data }: { data: TimelineEvent[] }) {
+  const isMobile = useIsMobile();
+  // On mobile: track which items are toggled open (tap to expand/collapse)
+  const [mobileExpanded, setMobileExpanded] = useState<Set<string>>(() => {
+    // Auto-expand high-impact items on mobile
+    return new Set(
+      data
+        .filter((e) => e.impactScore >= AUTO_EXPAND_THRESHOLD)
+        .map((e) => e.id),
+    );
+  });
+
+  function toggleMobile(id: string) {
+    setMobileExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   return (
-    <div className="mt-10 space-y-5">
+    <div className="mt-10 space-y-3">
       {data.map((event, i) => {
         const stamp = CATEGORY_STAMP[event.category];
+        // Desktop: always expanded. Mobile: toggled via tap.
+        const isOpen = isMobile ? mobileExpanded.has(event.id) : true;
+
         return (
           <div
             key={event.id}
-            className="relative overflow-hidden rounded-lg border border-border bg-surface p-6 font-mono transition-colors duration-150 hover:bg-surface-alt/40"
+            className="relative overflow-hidden rounded-lg border border-border bg-surface font-mono transition-colors duration-150 hover:bg-surface-alt/40"
+            onClick={isMobile ? () => toggleMobile(event.id) : undefined}
           >
-            {/* Case number + stamp */}
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <span className="text-[11px] uppercase tracking-[0.15em] text-ink-faint">
-                  Case #{String(i + 1).padStart(3, "0")}
-                </span>
-                <span className="mx-2 text-ink-faint">|</span>
-                <span className="text-[11px] uppercase tracking-[0.1em] text-ink-muted">
-                  {formatDate(event.date)}
-                </span>
-              </div>
+            {/* Collapsed: single row */}
+            <div className="flex items-center gap-4 px-5 py-4 sm:px-6">
+              <span className="shrink-0 text-[11px] uppercase tracking-[0.15em] text-ink-faint">
+                #{String(i + 1).padStart(3, "0")}
+              </span>
               <span
-                className={`-rotate-3 rounded border-2 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] ${stamp.color}`}
+                className={`hidden shrink-0 -rotate-3 rounded border-2 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] sm:inline-block ${stamp.color}`}
               >
                 {stamp.text}
               </span>
-            </div>
-
-            {/* Subject line */}
-            <h3 className="mt-4 text-[17px] font-bold uppercase tracking-wide text-ink">
-              {event.project}
-            </h3>
-
-            {/* Dossier fields */}
-            <div className="mt-4 space-y-2 border-t border-dashed border-border pt-4">
-              <div className="flex gap-3">
-                <span className="w-20 shrink-0 text-[11px] uppercase tracking-[0.1em] text-ink-faint">
-                  Vector
-                </span>
-                <span className="text-[13px] text-ink-muted">
-                  {event.vector.replace(/-/g, " ")}
-                </span>
-              </div>
-              <div className="flex gap-3">
-                <span className="w-20 shrink-0 text-[11px] uppercase tracking-[0.1em] text-ink-faint">
-                  Summary
-                </span>
-                <span className="text-[13px] leading-relaxed text-ink-muted">
-                  {event.summary}
-                </span>
-              </div>
-              <div className="flex gap-3">
-                <span className="w-20 shrink-0 text-[11px] uppercase tracking-[0.1em] text-ink-faint">
-                  Damages
-                </span>
-                <span className="text-[13px] font-medium text-ink">
-                  {event.amountLostDisplay === "N/A"
-                    ? "No direct loss reported"
-                    : event.amountLostDisplay}
-                </span>
-              </div>
-            </div>
-
-            {/* Severity bar */}
-            <div className="mt-4 flex items-center gap-3 border-t border-dashed border-border pt-4">
-              <span className="text-[11px] uppercase tracking-[0.1em] text-ink-faint">
-                Severity
+              <h3 className="min-w-0 truncate text-[14px] font-bold uppercase tracking-wide text-ink">
+                {event.project}
+              </h3>
+              <span className="ml-auto shrink-0 text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+                {formatDate(event.date)}
               </span>
-              <div className="flex gap-[3px]">
+              <div className="hidden shrink-0 gap-[3px] sm:flex">
                 {Array.from({ length: 10 }, (_, j) => (
                   <span
                     key={j}
-                    className={`inline-block h-3 w-3 border ${
+                    className={`inline-block h-2.5 w-2.5 border ${
                       j < event.impactScore
                         ? "border-brand-violet bg-brand-violet"
                         : "border-border bg-transparent"
@@ -396,9 +265,64 @@ function DossierView({ data }: { data: TimelineEvent[] }) {
                   />
                 ))}
               </div>
-              <span className="text-[12px] font-bold text-ink">
-                {event.impactScore}/10
-              </span>
+            </div>
+
+            {/* Expanded: full dossier details */}
+            <div
+              className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${
+                isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="space-y-2 border-t border-dashed border-border px-5 py-4 sm:px-6">
+                  {/* Stamp on mobile */}
+                  <div className="flex items-center gap-2 sm:hidden">
+                    <span
+                      className={`-rotate-3 rounded border-2 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] ${stamp.color}`}
+                    >
+                      {stamp.text}
+                    </span>
+                    <div className="flex gap-[3px]">
+                      {Array.from({ length: 10 }, (_, j) => (
+                        <span
+                          key={j}
+                          className={`inline-block h-2.5 w-2.5 border ${
+                            j < event.impactScore
+                              ? "border-brand-violet bg-brand-violet"
+                              : "border-border bg-transparent"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="w-20 shrink-0 text-[11px] uppercase tracking-[0.1em] text-ink-faint">
+                      Vector
+                    </span>
+                    <span className="text-[13px] text-ink-muted">
+                      {event.vector.replace(/-/g, " ")}
+                    </span>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="w-20 shrink-0 text-[11px] uppercase tracking-[0.1em] text-ink-faint">
+                      Summary
+                    </span>
+                    <span className="text-[13px] leading-relaxed text-ink-muted">
+                      {event.summary}
+                    </span>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="w-20 shrink-0 text-[11px] uppercase tracking-[0.1em] text-ink-faint">
+                      Damages
+                    </span>
+                    <span className="text-[13px] font-medium text-ink">
+                      {event.amountLostDisplay === "N/A"
+                        ? "No direct loss reported"
+                        : event.amountLostDisplay}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -408,7 +332,7 @@ function DossierView({ data }: { data: TimelineEvent[] }) {
 }
 
 /* ================================================================== */
-/*  VIEW 4 — Signal (impact-hero data visualisation)                   */
+/*  VIEW: Cards (impact-hero data visualisation)                       */
 /* ================================================================== */
 
 function SignalView({ data }: { data: TimelineEvent[] }) {
@@ -568,7 +492,7 @@ function BubblesView({ data }: { data: TimelineEvent[] }) {
   const isPanning = useRef(false);
   const panStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
   const zoomRef = useRef(zoom);
-  zoomRef.current = zoom;
+  useEffect(() => { zoomRef.current = zoom; }, [zoom]);
 
   // Measure container and recenter pan
   useEffect(() => {
@@ -868,16 +792,14 @@ const SORT_OPTIONS: { key: SortMode; label: string }[] = [
 ];
 
 const VIEW_OPTIONS: { key: ViewMode; label: string }[] = [
-  { key: "classic", label: "Classic" },
-  { key: "compact", label: "Compact" },
-  { key: "dossier", label: "Dossier" },
-  { key: "signal", label: "Signal" },
+  { key: "default", label: "Default" },
+  { key: "cards", label: "Cards" },
   { key: "bubbles", label: "Bubbles" },
 ];
 
 export function Timeline() {
   const [sort, setSort] = useState<SortMode>("date");
-  const [view, setView] = useState<ViewMode>("classic");
+  const [view, setView] = useState<ViewMode>("default");
 
   const totalLost = useMemo(() => {
     const sum = (events as TimelineEvent[]).reduce(
@@ -930,10 +852,8 @@ export function Timeline() {
             <PillToggle options={VIEW_OPTIONS} current={view} onChange={setView} />
           </div>
 
-          {view === "classic" && <ClassicView data={sorted} />}
-          {view === "compact" && <CompactView data={sorted} />}
-          {view === "dossier" && <DossierView data={sorted} />}
-          {view === "signal" && <SignalView data={sorted} />}
+          {view === "default" && <DefaultView data={sorted} />}
+          {view === "cards" && <SignalView data={sorted} />}
           {view === "bubbles" && <BubblesView data={sorted} />}
         </div>
       </main>

@@ -12,7 +12,7 @@ const NAV_LINKS: NavLink[] = [
   { label: "How It Works", href: "/#how-it-works" },
   { label: "Features", href: "/#features" },
   { label: "Download", to: "/download" },
-  { label: "Timeline", to: "/timeline" },
+  { label: "Frontend Incidents", to: "/timeline" },
   {
     label: "Docs",
     href: "https://docs.vibefi.dev/",
