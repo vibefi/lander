@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Apple,
@@ -10,6 +10,7 @@ import {
   Check,
   ChevronDown,
   Github,
+  Smartphone,
 } from "lucide-react";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
@@ -32,15 +33,6 @@ function detectOS(): OS {
 /* ------------------------------------------------------------------ */
 
 const CURL_CMD = `curl -fsSL https://github.com/vibefi/client-staging-public/releases/latest/download/install-vibefi-macos.sh | sh`;
-
-const OS_META: Record<
-  OS,
-  { label: string; icon: typeof Apple }
-> = {
-  macos: { label: "macOS", icon: Apple },
-  windows: { label: "Windows", icon: Monitor },
-  linux: { label: "Linux", icon: Terminal },
-};
 
 const GITHUB_RELEASE_REPO = "vibefi/client-staging-public";
 const GITHUB_RELEASES_API = `https://api.github.com/repos/${GITHUB_RELEASE_REPO}/releases/latest`;
@@ -164,6 +156,9 @@ function CopyButton({ text }: { text: string }) {
 /* ------------------------------------------------------------------ */
 
 function MacGuide() {
+  const [showTerminalGuide, setShowTerminalGuide] = useState(false);
+  const [showCurlGuide, setShowCurlGuide] = useState(false);
+
   return (
     <div className="space-y-4">
       {/* Command block */}
@@ -186,76 +181,120 @@ function MacGuide() {
 
       {/* Step-by-step for non-technical users */}
       <div className="rounded-lg border border-border bg-surface-alt p-4">
-        <p className="text-[14px] font-medium text-teal-accent">
-          New to the terminal? Step-by-step guide
-        </p>
-        <ol className="mt-4 flex flex-col gap-5 border-l-2 border-border pl-6">
-          <li>
-            <StepNumber n={1} />
-            <p className="mt-1 text-[15px] font-medium text-ink">
-              Open Terminal
-            </p>
-            <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
-              Press{" "}
-              <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
-                ⌘ Cmd
-              </kbd>{" "}
-              +{" "}
-              <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
-                Space
-              </kbd>{" "}
-              to open Spotlight, type{" "}
-              <strong className="text-ink">Terminal</strong>, and press Enter.
-            </p>
-          </li>
-          <li>
-            <StepNumber n={2} />
-            <p className="mt-1 text-[15px] font-medium text-ink">
-              Paste the install command
-            </p>
-            <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
-              Click the copy button above, then in Terminal press{" "}
-              <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
-                ⌘ Cmd
-              </kbd>{" "}
-              +{" "}
-              <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
-                V
-              </kbd>{" "}
-              to paste.
-            </p>
-          </li>
-          <li>
-            <StepNumber n={3} />
-            <p className="mt-1 text-[15px] font-medium text-ink">
-              Press Enter and wait
-            </p>
-            <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
-              The installer downloads and sets up VibeFi. When it finishes, you
-              can launch VibeFi from your Applications folder.
-            </p>
-          </li>
-        </ol>
+        <button
+          onClick={() => setShowTerminalGuide(!showTerminalGuide)}
+          className="flex w-full items-center justify-between text-left"
+          aria-expanded={showTerminalGuide}
+        >
+          <span className="text-[14px] font-medium text-teal-accent">
+            New to the terminal? Step-by-step guide
+          </span>
+          <ChevronDown
+            size={16}
+            className={`text-ink-muted transition-transform duration-300 ${
+              showTerminalGuide ? "rotate-180" : "rotate-0"
+            }`}
+          />
+        </button>
+        <div
+          className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
+            showTerminalGuide
+              ? "mt-4 grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0"
+          }`}
+          aria-hidden={!showTerminalGuide}
+        >
+          <ol className="overflow-hidden flex flex-col gap-5 border-l-2 border-border pl-6">
+            <li>
+              <StepNumber n={1} />
+              <p className="mt-1 text-[15px] font-medium text-ink">
+                Open Terminal
+              </p>
+              <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
+                Press{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  ⌘ Cmd
+                </kbd>{" "}
+                +{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  Space
+                </kbd>{" "}
+                to open Spotlight, type{" "}
+                <strong className="text-ink">Terminal</strong>, and press Enter.
+              </p>
+            </li>
+            <li>
+              <StepNumber n={2} />
+              <p className="mt-1 text-[15px] font-medium text-ink">
+                Paste the install command
+              </p>
+              <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
+                Click the copy button above, then in Terminal press{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  ⌘ Cmd
+                </kbd>{" "}
+                +{" "}
+                <kbd className="rounded border border-border bg-surface-alt px-1.5 py-0.5 font-mono text-[12px] text-ink">
+                  V
+                </kbd>{" "}
+                to paste.
+              </p>
+            </li>
+            <li>
+              <StepNumber n={3} />
+              <p className="mt-1 text-[15px] font-medium text-ink">
+                Press Enter and wait
+              </p>
+              <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
+                The installer downloads and sets up VibeFi. When it finishes, you
+                can launch VibeFi from your Applications folder.
+              </p>
+            </li>
+          </ol>
+        </div>
       </div>
 
       <div className="rounded-lg border border-border bg-surface-alt p-4">
-        <p className="text-[14px] font-semibold text-ink">
-          Why use{" "}
-          <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
-            curl | sh
-          </code>{" "}
-          on macOS?
-        </p>
-        <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
-          VibeFi is DAO-governed. As such we are not able to pay Apple for a
-          Gatekeeper signature in order to distribute the app. Given that
-          constraint, the install script is the most user-friendly installation
-          path we can support today. The script downloads and verifies the hash of the latest release, then installs it to your user specific Applications folder. It does not require admin permissions or make any system changes.
-        </p>
-        <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
-          If you are a technical user and prefer to avoid this flow, use the{" "}
-          <strong className="text-ink">Build from source</strong> option below.
-        </p>
+        <button
+          onClick={() => setShowCurlGuide(!showCurlGuide)}
+          className="flex w-full items-center justify-between text-left"
+          aria-expanded={showCurlGuide}
+        >
+          <span className="text-[14px] font-semibold text-ink">
+            Why use{" "}
+            <code className="rounded bg-surface px-1 py-0.5 font-mono text-[12px]">
+              curl | sh
+            </code>{" "}
+            on macOS?
+          </span>
+          <ChevronDown
+            size={16}
+            className={`text-ink-muted transition-transform duration-300 ${
+              showCurlGuide ? "rotate-180" : "rotate-0"
+            }`}
+          />
+        </button>
+        <div
+          className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
+            showCurlGuide
+              ? "mt-2 grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0"
+          }`}
+          aria-hidden={!showCurlGuide}
+        >
+          <div className="overflow-hidden">
+            <p className="text-[13px] leading-relaxed text-ink-muted">
+              VibeFi is DAO-governed. As such we are not able to pay Apple for a
+              Gatekeeper signature in order to distribute the app. Given that
+              constraint, the install script is the most user-friendly installation
+              path we can support today. The script downloads and verifies the hash of the latest release, then installs it to your user specific Applications folder. It does not require admin permissions or make any system changes.
+            </p>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
+              If you are a technical user and prefer to avoid this flow, use the{" "}
+              <strong className="text-ink">Build from source</strong> option below.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -560,56 +599,46 @@ function OsTabs({
   current: OS;
   onChange: (os: OS) => void;
 }) {
-  const tabs: OS[] = ["macos", "windows", "linux"];
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [pill, setPill] = useState({ left: 0, width: 0 });
-
-  useLayoutEffect(() => {
-    function updatePill() {
-      const container = containerRef.current;
-      if (!container) return;
-      const active = container.querySelector<HTMLButtonElement>(
-        `button[data-os="${current}"]`,
-      );
-      if (!active) return;
-      setPill({ left: active.offsetLeft, width: active.offsetWidth });
-    }
-
-    updatePill();
-    window.addEventListener("resize", updatePill);
-    return () => window.removeEventListener("resize", updatePill);
-  }, [current]);
-
+  const tabs: Array<
+    | { key: OS; label: string; icon: typeof Apple; disabled?: false }
+    | { key: "ios" | "android"; label: string; icon: typeof Apple; disabled: true }
+  > = [
+    { key: "macos", label: "macOS", icon: Apple },
+    { key: "windows", label: "Windows", icon: Monitor },
+    { key: "linux", label: "Linux", icon: Terminal },
+    { key: "ios", label: "iOS", icon: Apple, disabled: true },
+    { key: "android", label: "Android", icon: Smartphone, disabled: true },
+  ];
   return (
     <div
-      ref={containerRef}
-      className="relative inline-flex rounded-lg border border-border bg-surface-alt p-1"
+      className="flex w-full flex-wrap gap-1 rounded-lg border border-border bg-surface-alt p-1"
     >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute bottom-1 top-1 rounded-md bg-surface shadow-sm transition-[transform,width,opacity] duration-300 ease-out"
-        style={{
-          width: pill.width,
-          transform: `translateX(${pill.left}px)`,
-          opacity: pill.width ? 1 : 0,
-        }}
-      />
-      {tabs.map((os) => {
-        const meta = OS_META[os];
-        const Icon = meta.icon;
-        const active = os === current;
+      {tabs.map((tab) => {
+        const Icon = tab.icon;
+        const active = !tab.disabled && tab.key === current;
         return (
           <button
-            key={os}
-            data-os={os}
-            onClick={() => onChange(os)}
-            className={`relative z-10 inline-flex items-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium transition-colors duration-200 ${
-              active ? "text-ink" : "text-ink-muted hover:text-ink"
+            key={tab.key}
+            data-os={tab.key}
+            onClick={() => !tab.disabled && onChange(tab.key)}
+            disabled={tab.disabled}
+            className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-[13px] font-medium transition-colors duration-200 ${
+              active
+                ? "bg-surface text-ink shadow-sm"
+                : tab.disabled
+                  ? "cursor-not-allowed text-ink-faint opacity-70"
+                  : "text-ink-muted hover:text-ink"
             }`}
             aria-pressed={active}
+            aria-disabled={tab.disabled}
           >
             <Icon size={15} />
-            {meta.label}
+            {tab.label}
+            {tab.disabled && (
+              <span className="text-[10px] uppercase tracking-[0.08em] text-ink-faint">
+                Soon
+              </span>
+            )}
           </button>
         );
       })}
@@ -622,8 +651,7 @@ function OsTabs({
 /* ------------------------------------------------------------------ */
 
 export function Download() {
-  const detected = useMemo(detectOS, []);
-  const [os, setOs] = useState<OS>(detected);
+  const [os, setOs] = useState<OS>(() => detectOS());
   const [releaseAssets, setReleaseAssets] = useState<ReleaseAssets>({
     loading: true,
     error: null,
@@ -732,7 +760,7 @@ export function Download() {
     <>
       <Nav />
       <main className="px-6 pb-24 pt-14 sm:pb-32 sm:pt-20">
-        <div className="mx-auto max-w-[700px]">
+        <div className="mx-auto max-w-[760px]">
           <Link
             to="/"
             className="text-[13px] text-ink-muted transition-colors duration-150 hover:text-ink"
@@ -743,10 +771,13 @@ export function Download() {
           <h1 className="mt-6 text-[clamp(1.75rem,4vw,2.5rem)] font-bold leading-[1.15] tracking-tight text-ink">
             Download VibeFi
           </h1>
-          <p className="mt-4 max-w-[520px] text-[16px] leading-[1.7] text-ink-muted">
+          <p className="mt-4 text-[16px] leading-[1.7] text-ink-muted">
             The desktop client fetches governance-approved frontends from IPFS,
             verifies every file, builds locally, and runs them in a sandboxed
             runtime for people and agents.
+          </p>
+          <p className="mt-3 rounded-lg border border-border bg-surface-alt px-4 py-3 text-[13px] text-ink-muted">
+            Current downloads are for <strong className="text-ink">Sepolia testnet</strong> only.
           </p>
 
           <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_2px_rgba(15,23,42,0.08)]">

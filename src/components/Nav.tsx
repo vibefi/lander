@@ -62,6 +62,14 @@ export function Nav() {
       aria-label="Primary"
       className="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur-sm"
     >
+      <div className="border-b border-border/80 bg-surface-alt px-6 py-1.5 text-center">
+        <Link
+          to="/download"
+          className="text-[11px] font-medium tracking-[0.08em] text-ink-muted transition-colors duration-150 hover:text-ink"
+        >
+          VibeFi is live on Sepolia Testnet →
+        </Link>
+      </div>
       <div className="mx-auto flex h-14 max-w-[1152px] items-center justify-between px-6">
         <Link
           to="/"
