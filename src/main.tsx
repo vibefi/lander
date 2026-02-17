@@ -52,7 +52,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Landing /> },
       { path: "download", element: <Download /> },
-      { path: "timeline", element: <Timeline /> },
+      { path: "history", element: <Timeline /> },
       { path: "changelog", element: <Placeholder title="Changelog" /> },
       { path: "status", element: <Placeholder title="Status" /> },
     ],
