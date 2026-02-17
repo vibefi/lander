@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   Package,
   Vote,
-  ShieldCheck,
   AppWindow,
   FileCheck2,
   ListChecks,
@@ -367,14 +366,13 @@ function Hero() {
       <DotGrid />
       <div className="relative mx-auto max-w-[1152px]">
         <h1 className="mt-5 max-w-[720px] text-[clamp(2.25rem,5.5vw,3.5rem)] font-bold leading-[1.12] tracking-tight text-ink">
-          Verified DeFi frontends, governed by the people and agents who use
-          them.
+          Build and run agent-reviewed DeFi mini apps.
         </h1>
         <p className="mt-7 max-w-[560px] text-[16px] leading-[1.7] text-ink-muted">
-          Onchain governance approves frontend versions. Bundles are fetched
-          from IPFS, verified by manifest, built locally, and run in a sandbox
-          with no outbound network access. As humans and agents ship faster
-          with LLMs, verifiable distribution is mandatory.
+          VibeFi is a crowd-sourced frontend network where people and AI agents
+          review code, vote on releases, and run verified DeFi apps safely.
+          Bundles are fetched from IPFS, verified by manifest, built locally,
+          and run in a sandbox with no outbound network access.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
@@ -598,18 +596,18 @@ function ValueProps() {
 const WHY_NOW_ITEMS = [
   {
     icon: Package,
-    title: "Code ships faster",
-    desc: "LLMs let teams draft DeFi UI, wallet flows, and integration glue at unprecedented speed.",
+    title: "Code velocity is compounding",
+    desc: "LLMs let teams and power users draft DeFi mini apps, wallet flows, and integration glue at unprecedented speed.",
   },
   {
     icon: FileCheck2,
-    title: "Review ships faster",
-    desc: "The same models accelerate review by checking PRs, tracing contract calls, and flagging risky diffs earlier.",
+    title: "Agent review is now practical",
+    desc: "Teams can run multi-model review with ChatGPT, Claude, Kimi, and GLM to catch risky diffs before release.",
   },
   {
     icon: ShieldAlert,
-    title: "Distribution risk grows",
-    desc: "When changes move this quickly, centralized deploy pipelines become the weakest link. VibeFi adds governance and verification before people and agents run new code.",
+    title: "Distribution risk keeps growing",
+    desc: "When releases move this quickly, centralized deploy pipelines become the weakest link. VibeFi adds governance and verification before people and agents run new code.",
   },
 ] as const;
 
@@ -624,12 +622,12 @@ function WhyNow() {
           Why now
         </p>
         <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
-          LLMs changed the release cadence for DeFi frontends.
+          LLMs changed the release cadence for DeFi interfaces.
         </h2>
         <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
-          LLMs compress both stages that used to be slow: writing frontend code
-          and reviewing it. More releases can ship, more often. VibeFi exists to
-          make that new speed governable and verifiable.
+          LLMs compress both stages that used to be slow: writing app code and
+          reviewing it. More releases can ship, more often. VibeFi exists to
+          make that new speed governable and verifiable for people and agents.
         </p>
 
         <div className="mt-10 grid gap-8 md:grid-cols-3">
@@ -660,23 +658,23 @@ function WhyNow() {
 const STEPS = [
   {
     icon: Package,
-    title: "Package",
-    desc: "CLI validates dependencies against an allowlist, scans for forbidden patterns (fetch, WebSocket, HTTP imports), generates a deterministic manifest, and publishes to IPFS.",
+    title: "Submit",
+    desc: "Developers package a DeFi mini app with deterministic manifests and strict dependency constraints, then publish source to IPFS.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Review",
+    desc: "People and AI agents review proposed code changes, trace contract interactions, and surface risky behavior before release.",
   },
   {
     icon: Vote,
-    title: "Govern",
-    desc: "A governance proposal targets the onchain DappRegistry. Token holders and their agents vote, the proposal queues through a timelock, and execution writes the approved CID.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Verify",
-    desc: "The desktop client fetches the bundle by CID, checks every file against manifest.json byte counts, and builds locally with injected build config.",
+    title: "Vote",
+    desc: "A governance proposal targets the onchain DappRegistry. Token holders and their agents vote, then execution writes the approved CID.",
   },
   {
     icon: AppWindow,
     title: "Run",
-    desc: "Dapps serve over a custom app:// protocol in a sandboxed webview. All chain interaction goes through an injected EIP-1193 provider bridged to Rust.",
+    desc: "The client fetches the approved bundle by CID, verifies each file, builds locally, and runs it in a sandboxed app runtime.",
   },
 ] as const;
 
@@ -688,7 +686,7 @@ function HowItWorks() {
           End-to-end flow
         </p>
         <h2 className="mt-3 text-[26px] font-semibold leading-snug tracking-tight text-ink">
-          From source to sandboxed runtime in four steps
+          From submission to agent-reviewed runtime in four steps
         </h2>
 
         <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
@@ -734,8 +732,8 @@ const FEATURES = [
   },
   {
     icon: ShieldAlert,
-    title: "Security Council",
-    desc: "Emergency pause, unpause, and deprecation powers. Veto active proposals before timelock execution.",
+    title: "People + agent governance",
+    desc: "Review and release decisions can be made by token holders and autonomous agents participating in the same governance flow.",
   },
   {
     icon: Usb,
@@ -749,8 +747,8 @@ const FEATURES = [
   },
   {
     icon: Smartphone,
-    title: "WalletConnect",
-    desc: "Pair any mobile or desktop wallet via WalletConnect v2 relay. QR code rendered in the wallet selector.",
+    title: "Crowd-sourced frontends",
+    desc: "DeFi mini apps can evolve through open contribution, structured review, and governance-approved distribution.",
   },
 ] as const;
 
@@ -784,6 +782,57 @@ function Features() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+const USE_CASES = [
+  {
+    title: "Treasury management",
+    desc: "Ship internal or public dashboards for rebalancing, allocations, and execution workflows with governance-controlled releases.",
+  },
+  {
+    title: "Fund manager tooling",
+    desc: "Coordinate power-user interfaces for portfolio ops where every frontend change is reviewable and vote-approved.",
+  },
+  {
+    title: "Agentic strategy interfaces",
+    desc: "Run multi-model review pipelines and deploy apps that both humans and agents can trust to execute.",
+  },
+] as const;
+
+function UseCases() {
+  return (
+    <section className="border-b border-border px-6 py-20 sm:py-24">
+      <div className="mx-auto max-w-[1152px]">
+        <p className="text-[12px] font-medium uppercase tracking-wider text-ink-faint">
+          Use cases
+        </p>
+        <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
+          A DeFi power-user tool for teams and agents
+        </h2>
+        <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
+          VibeFi is built for high-trust execution surfaces where updates move
+          quickly and review depth matters.
+        </p>
+        <div className="mt-10 grid gap-8 md:grid-cols-3">
+          {USE_CASES.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-lg border border-border bg-surface p-6"
+            >
+              <h3 className="text-[15px] font-semibold text-ink">{item.title}</h3>
+              <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 text-[13px] leading-relaxed text-ink-muted">
+          Potential fit: OpenClaw-style collaborative interfaces for DeFi mini
+          apps.
+        </p>
       </div>
     </section>
   );
@@ -866,12 +915,12 @@ function CtaBand() {
     <section className="border-y border-border bg-surface-alt px-6 py-16 sm:py-20">
       <div className="mx-auto max-w-[1152px] text-center">
         <h2 className="text-[22px] font-semibold text-ink">
-          VibeFi is open source.
+          Crowd-sourced frontends for DeFi.
         </h2>
         <p className="mx-auto mt-3 max-w-[480px] text-[15px] leading-relaxed text-ink-muted">
-          Solidity contracts, Rust client, TypeScript CLI, and example dapps,
-          all in one monorepo. Read the code, run the local stack, or start
-          contributing as a person or agent.
+          Solidity contracts, Rust client, TypeScript CLI, and example mini
+          apps all in one monorepo. Read the code, run the local stack, or
+          contribute as a person or agent.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
@@ -915,6 +964,7 @@ export function Landing() {
         <WhyNow />
         <HowItWorks />
         <Features />
+        <UseCases />
         <TechnicalSnippet />
         <CtaBand />
       </main>
