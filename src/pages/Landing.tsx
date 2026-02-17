@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   Package,
   Vote,
-  ShieldCheck,
   AppWindow,
   FileCheck2,
   ListChecks,
@@ -13,6 +12,9 @@ import {
   EyeOff,
   Globe,
   Infinity,
+  Landmark,
+  Briefcase,
+  Bot,
 } from "lucide-react";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
@@ -367,14 +369,13 @@ function Hero() {
       <DotGrid />
       <div className="relative mx-auto max-w-[1152px]">
         <h1 className="mt-5 max-w-[720px] text-[clamp(2.25rem,5.5vw,3.5rem)] font-bold leading-[1.12] tracking-tight text-ink">
-          Verified DeFi frontends, governed by the people and agents who use
-          them.
+          Build and run verified DeFi mini apps, governed by people and agents.
         </h1>
         <p className="mt-7 max-w-[560px] text-[16px] leading-[1.7] text-ink-muted">
-          Onchain governance approves frontend versions. Bundles are fetched
-          from IPFS, verified by manifest, built locally, and run in a sandbox
-          with no outbound network access. As humans and agents ship faster
-          with LLMs, verifiable distribution is mandatory.
+          VibeFi is a crowd-sourced frontend network where people and AI agents
+          review code, vote on releases, and run verified DeFi apps safely.
+          Bundles are fetched from IPFS, verified by manifest, built locally,
+          and run in a sandbox with no outbound network access.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
@@ -598,18 +599,18 @@ function ValueProps() {
 const WHY_NOW_ITEMS = [
   {
     icon: Package,
-    title: "Code ships faster",
-    desc: "LLMs let teams draft DeFi UI, wallet flows, and integration glue at unprecedented speed.",
+    title: "Code velocity is compounding",
+    desc: "LLMs let teams and power users draft DeFi mini apps, wallet flows, and integration glue at unprecedented speed.",
   },
   {
     icon: FileCheck2,
-    title: "Review ships faster",
-    desc: "The same models accelerate review by checking PRs, tracing contract calls, and flagging risky diffs earlier.",
+    title: "Agent review is now practical",
+    desc: "Teams can run multi-model review with ChatGPT, Claude, Kimi, and GLM to catch risky diffs before release.",
   },
   {
     icon: ShieldAlert,
-    title: "Distribution risk grows",
-    desc: "When changes move this quickly, centralized deploy pipelines become the weakest link. VibeFi adds governance and verification before people and agents run new code.",
+    title: "Distribution risk keeps growing",
+    desc: "When releases move this quickly, centralized deploy pipelines become the weakest link. VibeFi adds governance and verification before people and agents run new code.",
   },
 ] as const;
 
@@ -624,12 +625,12 @@ function WhyNow() {
           Why now
         </p>
         <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
-          LLMs changed the release cadence for DeFi frontends.
+          LLMs changed the release cadence for DeFi interfaces.
         </h2>
         <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
-          LLMs compress both stages that used to be slow: writing frontend code
-          and reviewing it. More releases can ship, more often. VibeFi exists to
-          make that new speed governable and verifiable.
+          LLMs compress both stages that used to be slow: writing app code and
+          reviewing it. More releases can ship, more often. VibeFi exists to
+          make that new speed governable and verifiable for people and agents.
         </p>
 
         <div className="mt-10 grid gap-8 md:grid-cols-3">
@@ -660,23 +661,23 @@ function WhyNow() {
 const STEPS = [
   {
     icon: Package,
-    title: "Package",
-    desc: "CLI validates dependencies against an allowlist, scans for forbidden patterns (fetch, WebSocket, HTTP imports), generates a deterministic manifest, and publishes to IPFS.",
+    title: "Submit",
+    desc: "Developers package a DeFi mini app with deterministic manifests and strict dependency constraints, then publish source to IPFS.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Review",
+    desc: "People and AI agents review proposed code changes, trace contract interactions, and surface risky behavior before release.",
   },
   {
     icon: Vote,
-    title: "Govern",
-    desc: "A governance proposal targets the onchain DappRegistry. Token holders and their agents vote, the proposal queues through a timelock, and execution writes the approved CID.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Verify",
-    desc: "The desktop client fetches the bundle by CID, checks every file against manifest.json byte counts, and builds locally with injected build config.",
+    title: "Vote",
+    desc: "A governance proposal targets the onchain DappRegistry. Token holders and their agents vote, then execution writes the approved CID.",
   },
   {
     icon: AppWindow,
     title: "Run",
-    desc: "Dapps serve over a custom app:// protocol in a sandboxed webview. All chain interaction goes through an injected EIP-1193 provider bridged to Rust.",
+    desc: "The client fetches the approved bundle by CID, verifies each file, builds locally, and runs it in a sandboxed app runtime.",
   },
 ] as const;
 
@@ -688,7 +689,7 @@ function HowItWorks() {
           End-to-end flow
         </p>
         <h2 className="mt-3 text-[26px] font-semibold leading-snug tracking-tight text-ink">
-          From source to sandboxed runtime in four steps
+          From submission to agent-reviewed runtime in four steps
         </h2>
 
         <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
@@ -734,8 +735,8 @@ const FEATURES = [
   },
   {
     icon: ShieldAlert,
-    title: "Security Council",
-    desc: "Emergency pause, unpause, and deprecation powers. Veto active proposals before timelock execution.",
+    title: "People + agent governance",
+    desc: "Review and release decisions can be made by token holders and autonomous agents participating in the same governance flow.",
   },
   {
     icon: Usb,
@@ -749,10 +750,272 @@ const FEATURES = [
   },
   {
     icon: Smartphone,
-    title: "WalletConnect",
-    desc: "Pair any mobile or desktop wallet via WalletConnect v2 relay. QR code rendered in the wallet selector.",
+    title: "Crowd-sourced frontends",
+    desc: "DeFi mini apps can evolve through open contribution, structured review, and governance-approved distribution.",
   },
 ] as const;
+
+function FeaturesOrbitalDesktop() {
+  const [active, setActive] = useState<number | null>(null);
+  const activeFeature = active !== null ? FEATURES[active] : null;
+
+  // Ellipse radii — wide landscape oval
+  const rx = 480;
+  const ry = 200;
+  // Inner decorative ellipse
+  const irx = 240;
+  const iry = 100;
+  // SVG dimensions to contain the ellipse
+  const svgW = (rx + 10) * 2;
+  const svgH = (ry + 10) * 2;
+  const cx0 = svgW / 2;
+  const cy0 = svgH / 2;
+
+  return (
+    <div className="hidden md:block">
+      <div
+        className="relative mx-auto"
+        style={{ height: 480, maxWidth: 1152 }}
+      >
+        {/* Central hub */}
+        <div className="absolute left-1/2 top-1/2 z-10 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-border bg-surface shadow-lg">
+          {/* Default state */}
+          <div
+            className={cn(
+              "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300",
+              activeFeature ? "opacity-0" : "opacity-100",
+            )}
+          >
+            <span className="vf-gradient-text text-[13px] font-bold uppercase tracking-wider">
+              VibeFi
+            </span>
+            <span className="mt-1 text-[10px] text-ink-faint">
+              Security
+            </span>
+          </div>
+          {/* Active feature state — render all, only show the active one */}
+          {FEATURES.map((f, i) => (
+            <div
+              key={f.title}
+              className={cn(
+                "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300",
+                active === i ? "opacity-100" : "opacity-0",
+              )}
+            >
+              <f.icon size={22} className="text-teal-accent" />
+              <span className="mt-2 max-w-[100px] text-center text-[12px] font-semibold leading-tight text-ink">
+                {f.title}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Orbit rings */}
+        <svg
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          width={svgW}
+          height={svgH}
+          viewBox={`0 0 ${svgW} ${svgH}`}
+        >
+          {/* Outer dashed ellipse */}
+          <ellipse
+            cx={cx0}
+            cy={cy0}
+            rx={rx}
+            ry={ry}
+            fill="none"
+            stroke="#cbd5e1"
+            strokeWidth="1"
+            strokeDasharray="4 6"
+            opacity="0.4"
+          />
+          {/* Inner subtle ellipse */}
+          <ellipse
+            cx={cx0}
+            cy={cy0}
+            rx={irx}
+            ry={iry}
+            fill="none"
+            stroke="#cbd5e1"
+            strokeWidth="0.5"
+            strokeDasharray="2 8"
+            opacity="0.3"
+          />
+          {/* Animated dot traveling the outer ellipse */}
+          <circle r="3.5" fill="#06b6d4" opacity="0.7">
+            <animateMotion
+              dur="14s"
+              repeatCount="indefinite"
+              path={`M${cx0},${cy0 - ry} A${rx},${ry} 0 1,1 ${cx0 - 0.01},${cy0 - ry}`}
+            />
+          </circle>
+          {/* Second dot, opposite phase */}
+          <circle r="2.5" fill="#7c3aed" opacity="0.5">
+            <animateMotion
+              dur="14s"
+              begin="-7s"
+              repeatCount="indefinite"
+              path={`M${cx0},${cy0 - ry} A${rx},${ry} 0 1,1 ${cx0 - 0.01},${cy0 - ry}`}
+            />
+          </circle>
+          {/* Connector lines from center to each node */}
+          {FEATURES.map((_, i) => {
+            const angle = ((i * 60 - 90) * Math.PI) / 180;
+            const x2 = cx0 + Math.cos(angle) * rx;
+            const y2 = cy0 + Math.sin(angle) * ry;
+            return (
+              <line
+                key={i}
+                x1={cx0}
+                y1={cy0}
+                x2={x2}
+                y2={y2}
+                stroke="#cbd5e1"
+                strokeWidth="0.5"
+                opacity={active === i ? 0.6 : 0.15}
+                className="transition-opacity duration-300"
+              />
+            );
+          })}
+        </svg>
+
+        {/* Orbiting feature cards */}
+        {FEATURES.map((f, i) => {
+          const angle = ((i * 60 - 90) * Math.PI) / 180;
+          const px = Math.cos(angle) * rx;
+          const py = Math.sin(angle) * ry;
+          const isActive = active === i;
+
+          return (
+            <button
+              key={f.title}
+              onClick={() => setActive(isActive ? null : i)}
+              onMouseEnter={() => setActive(i)}
+              onMouseLeave={() => setActive(null)}
+              className={cn(
+                "absolute left-1/2 top-1/2 z-20 cursor-pointer rounded-xl border bg-surface text-left transition-all duration-300",
+                isActive
+                  ? "shadow-lg"
+                  : "shadow-sm hover:shadow-md",
+              )}
+              style={{
+                transform: `translate(calc(-50% + ${px}px), calc(-50% + ${py}px)) scale(${isActive ? 1.08 : 1})`,
+                borderColor: isActive ? "#06b6d4" : "#cbd5e1",
+                width: isActive ? 220 : 180,
+              }}
+            >
+              <div className="p-4">
+                <div className="flex items-center gap-2.5">
+                  <f.icon
+                    size={16}
+                    className={cn(
+                      "shrink-0 transition-colors duration-300",
+                      isActive ? "text-teal-accent" : "text-ink-faint",
+                    )}
+                  />
+                  <h3 className="text-[13px] font-semibold leading-tight text-ink">
+                    {f.title}
+                  </h3>
+                </div>
+                <div
+                  className={cn(
+                    "grid transition-all duration-300",
+                    isActive
+                      ? "mt-2.5 grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0",
+                  )}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-[12px] leading-relaxed text-ink-muted">
+                      {f.desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function FeaturesOrbitalMobile() {
+  const [active, setActive] = useState<number | null>(0);
+  const [userInteracted, setUserInteracted] = useState(false);
+
+  // Auto-cycle through features until the user taps one
+  useEffect(() => {
+    if (userInteracted) return;
+    const interval = setInterval(() => {
+      setActive((prev) => ((prev ?? -1) + 1) % FEATURES.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [userInteracted]);
+
+  function handleTap(i: number) {
+    setUserInteracted(true);
+    setActive(active === i ? null : i);
+  }
+
+  return (
+    <div className="md:hidden">
+      {/* Tap hint — fades out once user interacts */}
+      <div
+        className={cn(
+          "mb-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-faint transition-opacity duration-500",
+          userInteracted ? "opacity-0" : "opacity-100",
+        )}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 11V5a3 3 0 0 0-6 0v6" />
+          <path d="M18 11a6 6 0 0 1-12 0" />
+          <line x1="12" y1="19" x2="12" y2="22" />
+        </svg>
+        Tap to explore
+      </div>
+      {/* Two-column grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {FEATURES.map((f, i) => {
+          const isActive = active === i;
+          return (
+            <button
+              key={f.title}
+              onClick={() => handleTap(i)}
+              className={cn(
+                "cursor-pointer rounded-xl border bg-surface p-4 text-left transition-all duration-300",
+                isActive
+                  ? "border-teal-accent shadow-md"
+                  : "border-border",
+              )}
+            >
+              <f.icon
+                size={18}
+                className={cn(
+                  "transition-colors duration-300",
+                  isActive ? "text-teal-accent" : "text-ink-faint",
+                )}
+              />
+              <h3 className="mt-2.5 text-[13px] font-semibold leading-tight text-ink">
+                {f.title}
+              </h3>
+              <p
+                className={cn(
+                  "text-[12px] leading-relaxed text-ink-muted transition-all duration-300",
+                  isActive
+                    ? "mt-2 max-h-40 opacity-100"
+                    : "mt-0 max-h-0 overflow-hidden opacity-0",
+                )}
+              >
+                {f.desc}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function Features() {
   return (
@@ -762,24 +1025,66 @@ function Features() {
     >
       <div className="mx-auto max-w-[1152px]">
         <p className="text-[12px] font-medium uppercase tracking-wider text-ink-faint">
-          Capabilities
+          Security
         </p>
         <h2 className="mt-3 text-[26px] font-semibold leading-snug tracking-tight text-ink">
           Built for verification, not convenience theater
         </h2>
 
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
+        <div className="mt-14">
+          <FeaturesOrbitalDesktop />
+          <FeaturesOrbitalMobile />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const USE_CASES = [
+  {
+    icon: Landmark,
+    title: "Treasury management",
+    desc: "Ship internal or public dashboards for rebalancing, allocations, and execution workflows with governance-controlled releases.",
+  },
+  {
+    icon: Briefcase,
+    title: "Fund manager tooling",
+    desc: "Coordinate power-user interfaces for portfolio ops where every frontend change is reviewable and vote-approved.",
+  },
+  {
+    icon: Bot,
+    title: "Agentic strategy interfaces",
+    desc: "Run multi-model review pipelines and deploy apps that both humans and agents can trust to execute.",
+  },
+] as const;
+
+function UseCases() {
+  return (
+    <section className="border-b border-border bg-[#f4f8ff] px-6 py-20 sm:py-24">
+      <div className="mx-auto max-w-[1152px]">
+        <p className="text-[12px] font-medium uppercase tracking-wider text-ink-faint">
+          Use cases
+        </p>
+        <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
+          A DeFi power-user tool for teams and agents
+        </h2>
+        <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
+          VibeFi is built for high-trust execution surfaces where updates move
+          quickly and review depth matters.
+        </p>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-3">
+          {USE_CASES.map((item) => (
             <div
-              key={f.title}
+              key={item.title}
               className="rounded-lg border border-border bg-surface p-6"
             >
-              <f.icon size={20} className="text-teal-accent" />
+              <item.icon size={20} className="text-teal-accent" />
               <h3 className="mt-4 text-[15px] font-semibold text-ink">
-                {f.title}
+                {item.title}
               </h3>
               <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
-                {f.desc}
+                {item.desc}
               </p>
             </div>
           ))}
@@ -866,12 +1171,12 @@ function CtaBand() {
     <section className="border-y border-border bg-surface-alt px-6 py-16 sm:py-20">
       <div className="mx-auto max-w-[1152px] text-center">
         <h2 className="text-[22px] font-semibold text-ink">
-          VibeFi is open source.
+          Crowd-sourced frontends for DeFi.
         </h2>
         <p className="mx-auto mt-3 max-w-[480px] text-[15px] leading-relaxed text-ink-muted">
-          Solidity contracts, Rust client, TypeScript CLI, and example dapps,
-          all in one monorepo. Read the code, run the local stack, or start
-          contributing as a person or agent.
+          Solidity contracts, Rust client, TypeScript CLI, and example mini
+          apps all in one monorepo. Read the code, run the local stack, or
+          contribute as a person or agent.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
@@ -915,6 +1220,7 @@ export function Landing() {
         <WhyNow />
         <HowItWorks />
         <Features />
+        <UseCases />
         <TechnicalSnippet />
         <CtaBand />
       </main>

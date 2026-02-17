@@ -54,9 +54,9 @@ export function Footer() {
               </p>
             </div>
             <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
-              Decentralized governance
+              Crowd-sourced frontends
               <br />
-              for DeFi frontends used by people and agents.
+              for DeFi, governed by people and agents.
             </p>
           </div>
           {COLUMNS.map((col) => (
