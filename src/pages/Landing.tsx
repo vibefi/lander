@@ -416,14 +416,21 @@ function Problem() {
             The problem
           </p>
           <h2 className="mt-3 text-[22px] font-semibold leading-snug text-ink">
-            You trust the deploy pipeline more than the code.
+            You trust the infrastructure more than the code.
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
             Every DeFi frontend runs on a centralized host: Vercel, Cloudflare,
             a dev team's server. A compromised deploy key, a rogue CDN config,
             or a supply-chain attack can swap the interface without touching the
             contracts. People and agents have no way to verify what code their
-            clients actually run.
+            clients actually run. This isn't just hypothetical, we've documented{" "}
+            <Link
+              to="/history"
+              className="text-teal-accent underline decoration-teal-accent/60 underline-offset-2 hover:decoration-teal-accent"
+            >
+              $1.6B in losses from compromised frontends
+            </Link>
+            .
           </p>
         </div>
         <div>
