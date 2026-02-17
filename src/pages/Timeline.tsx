@@ -787,8 +787,8 @@ function BubblesView({ data }: { data: TimelineEvent[] }) {
 /* ================================================================== */
 
 const SORT_OPTIONS: { key: SortMode; label: string }[] = [
-  { key: "date", label: "By Date" },
   { key: "impact", label: "By Impact" },
+  { key: "date", label: "By Date" },
 ];
 
 const VIEW_OPTIONS: { key: ViewMode; label: string }[] = [
@@ -798,7 +798,7 @@ const VIEW_OPTIONS: { key: ViewMode; label: string }[] = [
 ];
 
 export function Timeline() {
-  const [sort, setSort] = useState<SortMode>("date");
+  const [sort, setSort] = useState<SortMode>("impact");
   const [view, setView] = useState<ViewMode>("default");
 
   const totalLost = useMemo(() => {
