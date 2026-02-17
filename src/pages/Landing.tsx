@@ -420,13 +420,13 @@ function Problem() {
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
             Every DeFi frontend runs on a centralized host: Vercel, Cloudflare,
-            a dev team's server. A compromised deploy key, a rogue CDN config,
-            or a supply-chain attack can swap the interface without touching the
-            contracts. People and agents have no way to verify what code their
-            clients actually run. This isn't just hypothetical, we've documented{" "}
+            a dev team's server. A compromised deploy key, rogue CDN config,
+            or supply-chain attack can swap the interface without touching
+            contracts. Users have no way to verify what code their
+            clients run. This isn't just hypothetical. We've documented{" "}
             <Link
               to="/history"
-              className="text-teal-accent underline decoration-teal-accent/60 underline-offset-2 hover:decoration-teal-accent"
+              className="font-medium text-ink-muted underline decoration-ink-faint/80 underline-offset-2 transition-colors duration-150 hover:text-ink hover:decoration-ink"
             >
               $1.6B in losses from compromised frontends
             </Link>
