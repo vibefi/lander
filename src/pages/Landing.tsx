@@ -11,6 +11,7 @@ import {
   WifiOff,
   Smartphone,
   EyeOff,
+  ArrowRight,
   Globe,
   Infinity,
   Landmark,
@@ -471,6 +472,14 @@ const VALUE_PROPS = [
   },
 ] as const;
 
+const VALUE_PROP_STAGGER_MS = 800;
+const VALUE_PROP_BODY_FADE_MS = 500;
+const CTA_REVEAL_DELAY_MS =
+  (VALUE_PROPS.length - 1) * VALUE_PROP_STAGGER_MS +
+  VALUE_PROPS[VALUE_PROPS.length - 1].headline.length * 40 +
+  100 +
+  VALUE_PROP_BODY_FADE_MS;
+
 /* Ticker / typewriter reveal */
 function TypewriterHeadline({ text, trigger }: { text: string; trigger: boolean }) {
   const [count, setCount] = useState(0);
@@ -494,27 +503,11 @@ function TypewriterHeadline({ text, trigger }: { text: string; trigger: boolean 
   );
 }
 
-function ValuePropsContent() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.3 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
+function ValuePropsContent({ visible }: { visible: boolean }) {
   return (
-    <div ref={sectionRef} className="space-y-12">
+    <div className="space-y-12">
       {VALUE_PROPS.map((prop, i) => {
-        const delay = i * 800;
+        const delay = i * VALUE_PROP_STAGGER_MS;
         return (
           <TickerItem
             key={prop.headline}
@@ -571,6 +564,22 @@ function TickerItem({
 }
 
 function ValueProps() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(true);
+      },
+      { threshold: 0.3 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section className="border-b border-border px-6 py-20 sm:py-24">
       <div className="mx-auto max-w-[1152px]">
@@ -585,11 +594,44 @@ function ValueProps() {
           there's no centralized server in the loop.
         </p>
 
-        <div className="mt-10">
-          <ValuePropsContent />
+        <div ref={sectionRef} className="mt-10">
+          <ValuePropsContent visible={visible} />
         </div>
+        <HistoryCta visible={visible} />
       </div>
     </section>
+  );
+}
+
+function HistoryCta({ visible }: { visible: boolean }) {
+  return (
+    <div
+      className={cn(
+        "mt-10 rounded-lg border border-border bg-surface-alt px-5 py-7 text-center transition-all duration-500 sm:px-8",
+        visible
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-2 opacity-0",
+      )}
+      style={{ transitionDelay: `${CTA_REVEAL_DELAY_MS}ms` }}
+    >
+      <p className="mx-auto max-w-[700px] text-[14px] leading-relaxed text-ink-muted">
+        Understand the risks VibeFi is designed to prevent before they reach
+        your wallet.
+      </p>
+      <Link
+        to="/history"
+        className={cn(
+          "group mt-5 inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-alt",
+          "border border-ink/20 bg-ink text-surface hover:border-ink hover:bg-ink/90",
+        )}
+      >
+        <span>Browse DeFi Incident History</span>
+        <ArrowRight
+          size={16}
+          className="transition-transform duration-150 group-hover:translate-x-0.5"
+        />
+      </Link>
+    </div>
   );
 }
 
@@ -787,7 +829,7 @@ function FeaturesOrbitalDesktop() {
               activeFeature ? "opacity-0" : "opacity-100",
             )}
           >
-            <span className="vf-gradient-text text-[13px] font-bold uppercase tracking-wider">
+            <span className="vf-gradient-text text-[13px] font-bold tracking-wider">
               VibeFi
             </span>
             <span className="mt-1 text-[10px] text-ink-faint">

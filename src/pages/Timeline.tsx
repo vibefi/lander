@@ -836,7 +836,7 @@ export function Timeline() {
           </Link>
 
           <h1 className="mt-6 text-[clamp(1.75rem,4vw,2.5rem)] font-bold leading-[1.15] tracking-tight text-ink">
-            DeFi Frontend Incident Timeline
+            DeFi Frontend Incident History
           </h1>
           <p className="mt-4 max-w-[640px] text-[16px] leading-[1.7] text-ink-muted">
             We documented {sorted.length} incidents, representing over{" "}
