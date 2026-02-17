@@ -804,39 +804,35 @@ const USE_CASES = [
 
 function UseCases() {
   return (
-    <section className="border-y border-border bg-surface-alt px-6 py-20 sm:py-24">
+    <section className="border-b border-border px-6 py-20 sm:py-24">
       <div className="mx-auto max-w-[1152px]">
-        <div className="rounded-2xl border border-border bg-surface px-6 py-8 shadow-[0_1px_2px_rgba(15,23,42,0.06)] sm:px-8 sm:py-10">
-          <p className="text-[12px] font-medium uppercase tracking-wider text-ink-faint">
-            Use cases
-          </p>
-          <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
-            A DeFi power-user tool for teams and agents
-          </h2>
-          <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
-            VibeFi is built for high-trust execution surfaces where updates move
-            quickly and review depth matters.
-          </p>
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {USE_CASES.map((item, index) => (
-              <div
-                key={item.title}
-                className="rounded-xl border border-border bg-surface-alt p-6"
-              >
-                <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-surface px-2 text-[11px] font-semibold text-ink-faint">
-                  0{index + 1}
-                </span>
-                <h3 className="mt-4 text-[16px] font-semibold text-ink">{item.title}</h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-6 text-[13px] leading-relaxed text-ink-muted">
-            Built for people and agents running production DeFi workflows.
-          </p>
+        <p className="text-[12px] font-medium uppercase tracking-wider text-ink-faint">
+          Use cases
+        </p>
+        <h2 className="mt-3 max-w-[760px] text-[26px] font-semibold leading-snug tracking-tight text-ink">
+          A DeFi power-user tool for teams and agents
+        </h2>
+        <p className="mt-4 max-w-[760px] text-[15px] leading-relaxed text-ink-muted">
+          VibeFi is built for high-trust execution surfaces where updates move
+          quickly and review depth matters.
+        </p>
+        <div className="mt-10 grid gap-8 md:grid-cols-3">
+          {USE_CASES.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-lg border border-border bg-surface p-6"
+            >
+              <h3 className="text-[15px] font-semibold text-ink">{item.title}</h3>
+              <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
+                {item.desc}
+              </p>
+            </div>
+          ))}
         </div>
+        <p className="mt-6 text-[13px] leading-relaxed text-ink-muted">
+          Potential fit: OpenClaw-style collaborative interfaces for DeFi mini
+          apps.
+        </p>
       </div>
     </section>
   );
