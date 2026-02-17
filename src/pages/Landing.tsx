@@ -360,13 +360,36 @@ function ArchitectureDiagram() {
 /*  Hero                                                               */
 /* ------------------------------------------------------------------ */
 
+const HERO_HEADLINES = [
+  "Verified DeFi mini apps, governed by the people and agents who use them.",
+  "Build and run verified DeFi mini apps, governed by people and agents.",
+  "Agent-reviewed DeFi frontends, governed by the people and agents who use them.",
+  "Build and run verified DeFi frontends with people-and-agent governance.",
+  "Verified DeFi mini apps for power users, reviewed and governed by people and agents.",
+  "Build DeFi mini apps. Let people and agents review, vote, and run them safely.",
+  "Verified DeFi apps, built fast and governed by the people and agents who rely on them.",
+  "Crowd-sourced DeFi mini apps, reviewed by agents and governed by users.",
+  "Build and run DeFi mini apps with agent review and onchain governance.",
+  "Verified DeFi frontends where people and agents review code and govern releases.",
+] as const;
+
 function Hero() {
+  const [headlineIndex, setHeadlineIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setHeadlineIndex((idx) => (idx + 1) % HERO_HEADLINES.length);
+    }, 10000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   return (
     <section className="relative px-6 pb-24 pt-28 sm:pb-32 sm:pt-36">
       <DotGrid />
       <div className="relative mx-auto max-w-[1152px]">
         <h1 className="mt-5 max-w-[720px] text-[clamp(2.25rem,5.5vw,3.5rem)] font-bold leading-[1.12] tracking-tight text-ink">
-          Build and run agent-reviewed DeFi mini apps.
+          {HERO_HEADLINES[headlineIndex]}
         </h1>
         <p className="mt-7 max-w-[560px] text-[16px] leading-[1.7] text-ink-muted">
           VibeFi is a crowd-sourced frontend network where people and AI agents
