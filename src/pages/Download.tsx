@@ -439,60 +439,33 @@ function BinaryDownload({
   );
 }
 
-function SourceBuildOption() {
-  const [expanded, setExpanded] = useState(false);
-
+function BuildFromSourcePanel() {
   return (
-    <div className="rounded-lg border border-border bg-surface p-4">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center justify-between text-left"
-        aria-expanded={expanded}
-      >
-        <span className="text-[15px] font-semibold text-ink">
-          Build from source
-        </span>
-        <ChevronDown
-          size={16}
-          className={`transition-transform duration-300 ${
-            expanded ? "rotate-180" : "rotate-0"
-          }`}
-        />
-      </button>
-      <div
-        className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          expanded
-            ? "grid-rows-[1fr] opacity-100"
-            : "grid-rows-[0fr] opacity-0"
-        }`}
-        aria-hidden={!expanded}
-      >
-        <div className="overflow-hidden">
-          <p className="pt-2 text-[14px] leading-relaxed text-ink-muted">
-            Prefer to compile VibeFi yourself? Follow the monorepo setup guide
-            and the client build instructions.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <a
-              href="https://github.com/vibefi/monorepo/blob/master/SETUP.md#client"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-surface px-4 text-[13px] font-medium text-ink transition-colors duration-150 hover:bg-white"
-            >
-              <Wrench size={16} />
-              Build guide
-            </a>
-            <a
-              href="https://github.com/vibefi/monorepo/tree/master/client"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-surface px-4 text-[13px] font-medium text-ink transition-colors duration-150 hover:bg-white"
-            >
-              <Github size={16} />
-              Client source
-            </a>
-          </div>
-        </div>
+    <div className="mt-6 rounded-2xl border border-border bg-surface-alt/70 p-5 sm:p-6">
+      <h2 className="text-[15px] font-semibold text-ink">Build from source</h2>
+      <p className="mt-4 text-[14px] leading-relaxed text-ink-muted">
+        Prefer to compile VibeFi yourself? Follow the monorepo setup guide and
+        the client build instructions.
+      </p>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <a
+          href="https://github.com/vibefi/monorepo/blob/master/SETUP.md#client"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-surface px-4 text-[13px] font-medium text-ink transition-colors duration-150 hover:bg-white"
+        >
+          <Wrench size={16} />
+          Build guide
+        </a>
+        <a
+          href="https://github.com/vibefi/monorepo/tree/master/client"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-surface px-4 text-[13px] font-medium text-ink transition-colors duration-150 hover:bg-white"
+        >
+          <Github size={16} />
+          Client source
+        </a>
       </div>
     </div>
   );
@@ -855,16 +828,17 @@ export function Download() {
               )}
             </ul>
 
-            <div className="mt-6 space-y-4 border-t border-border/80 pt-6">
+            <div className="mt-6 border-t border-border/80 pt-6">
               <DownloadChecksums
                 entries={checksumEntries}
                 releaseTag={releaseAssets.tag}
                 releaseUrl={releaseAssets.releaseUrl}
                 error={releaseAssets.error}
               />
-              <SourceBuildOption />
             </div>
           </div>
+
+          <BuildFromSourcePanel />
         </div>
       </main>
       <Footer />
