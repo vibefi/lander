@@ -1228,31 +1228,29 @@ function CtaBand() {
           apps all in one monorepo. Read the code, run the local stack, or
           contribute as a person or agent.
         </p>
-        <div className="mt-8 flex flex-col items-center gap-4">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link
             to="/download"
             className="vf-gradient-button inline-flex h-10 items-center rounded-lg px-5 text-[14px] font-medium transition duration-150"
           >
             Download
           </Link>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="https://docs.vibefi.dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center rounded-lg border border-border bg-white px-5 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
-            >
-              Read the docs
-            </a>
-            <a
-              href="https://github.com/vibefi/monorepo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center rounded-lg border border-border bg-white px-5 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
-            >
-              View on GitHub
-            </a>
-          </div>
+          <a
+            href="https://docs.vibefi.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center rounded-lg border border-border bg-white px-5 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
+          >
+            Read the docs
+          </a>
+          <a
+            href="https://github.com/vibefi/monorepo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center rounded-lg border border-border bg-white px-5 text-[14px] font-medium text-ink-muted transition-colors duration-150 hover:border-ink-faint hover:text-ink"
+          >
+            View on GitHub
+          </a>
         </div>
       </div>
     </section>
