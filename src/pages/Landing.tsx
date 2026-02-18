@@ -1165,7 +1165,7 @@ const MANIFEST_EXAMPLE = `{
     { "path": "index.html", "bytes": 542 },
     { "path": "src/App.tsx", "bytes": 1823 },
     { "path": "abis/Router.json", "bytes": 4201 },
-    { "path": "addresses.json", "bytes": 312 }
+    { "path": "vibefi.json", "bytes": 612 }
   ]
 }`;
 
@@ -1182,7 +1182,11 @@ function TechnicalSnippet() {
               Every bundle is fully described before it reaches the chain.
             </h2>
             <p className="mt-4 text-[15px] leading-relaxed text-ink-muted">
-              The CLI generates a deterministic{" "}
+              Each vapp defines source properties in{" "}
+              <code className="rounded bg-surface-alt px-1.5 py-0.5 font-mono text-[13px]">
+                vibefi.json
+              </code>{" "}
+              (addresses plus optional capabilities). The CLI then generates a deterministic{" "}
               <code className="rounded bg-surface-alt px-1.5 py-0.5 font-mono text-[13px]">
                 manifest.json
               </code>{" "}
