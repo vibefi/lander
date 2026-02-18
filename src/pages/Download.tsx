@@ -32,9 +32,9 @@ function detectOS(): OS {
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const CURL_CMD = `curl -fsSL https://github.com/vibefi/client-staging-public/releases/latest/download/install-vibefi-macos.sh | sh`;
+const CURL_CMD = `curl -fsSL https://github.com/vibefi/client/releases/latest/download/install-vibefi-macos.sh | sh`;
 
-const GITHUB_RELEASE_REPO = "vibefi/client-staging-public";
+const GITHUB_RELEASE_REPO = "vibefi/client";
 const GITHUB_RELEASES_API = `https://api.github.com/repos/${GITHUB_RELEASE_REPO}/releases/latest`;
 const GITHUB_RELEASES_PAGE = `https://github.com/${GITHUB_RELEASE_REPO}/releases/latest`;
 
