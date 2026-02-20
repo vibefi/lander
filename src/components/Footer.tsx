@@ -5,27 +5,25 @@ const COLUMNS = [
     title: "Product",
     links: [
       { label: "Why Now", href: "/#why-now" },
-      { label: "Features", href: "/#features" },
       { label: "How It Works", href: "/#how-it-works" },
+      { label: "Features", href: "/#features" },
     ],
   },
   {
     title: "Resources",
     links: [
       {
-        label: "Documentation",
-        href: "https://docs.vibefi.dev/",
-        external: true,
+        label: "Download",
+        href: "/download",
       },
       {
-        label: "Telegram",
-        href: "https://t.me/vibefi_dev",
-        external: true,
+        label: "History",
+        href: "/history",
       },
     ],
   },
   {
-    title: "Code",
+    title: "Offchain",
     links: [
       {
         label: "GitHub",
@@ -33,8 +31,13 @@ const COLUMNS = [
         external: true,
       },
       {
-        label: "Monorepo",
-        href: "https://github.com/vibefi/monorepo",
+        label: "X",
+        href: "https://x.com/vibefi_dev",
+        external: true,
+      },
+      {
+        label: "Telegram",
+        href: "https://t.me/vibefi_dev",
         external: true,
       },
     ],
