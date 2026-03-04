@@ -1,0 +1,50 @@
+name: Deploy To IPFS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+concurrency:
+  group: lander-ipfs-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy lander
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      cid: ${{ steps.deploy.outputs.cid }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Deploy to IPFS
+        id: deploy
+        uses: ipshipyard/ipfs-deploy-action@v1.8.0
+        with:
+          path-to-deploy: dist
+          storacha-key: ${{ secrets.STORACHA_KEY }}
+          storacha-proof: ${{ secrets.STORACHA_PROOF }}
+          github-token: ${{ github.token }}
