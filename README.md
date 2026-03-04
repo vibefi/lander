@@ -18,7 +18,14 @@ bun run preview
 
 ## Deployment
 
-Deployments run through GitHub Actions using [`ipshipyard/ipfs-deploy-action`](https://github.com/ipshipyard/ipfs-deploy-action).
+Cloudflare Pages publishes this site from the configured production branch.
+
+Cloudflare build settings:
+
+- Build command: `bun run build`
+- Build output directory: `dist`
+
+IPFS deploy is additive and runs via GitHub Actions using [`ipshipyard/ipfs-deploy-action`](https://github.com/ipshipyard/ipfs-deploy-action).
 
 Workflow: `.github/workflows/deploy-ipfs.yml`
 
@@ -27,4 +34,4 @@ Required repository secrets:
 - `STORACHA_KEY`
 - `STORACHA_PROOF`
 
-On each push or pull request to `master`, CI builds `dist/`, uploads it to IPFS, and reports the CID in workflow outputs/status.
+On each push to `master`, CI builds `dist/`, uploads it to IPFS, and reports the CID in workflow outputs/status.
