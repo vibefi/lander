@@ -1,6 +1,7 @@
 name: Deploy To IPFS
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
